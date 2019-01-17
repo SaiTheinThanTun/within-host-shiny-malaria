@@ -1,6 +1,9 @@
 # Ref. White NJ, Chapman D, Watt G (1992) The effects of multiplication and synchronicity 
 # on the vascular distribution of parasites in falciparum malaria. Trans R Soc Trop Med Hyg 86:590-597.
 
+h<-1 #what is h, used in function 5, drugaction
+initconc<-1 #initial drug concentration
+
 #1. age distribution of parasites####
 InitAgeDistribution <- function(initN,lifecycle,mu,sigma)
 {
@@ -28,7 +31,7 @@ countrings<-function(lst){
   sum(lst[1:MaxAge]) #only up to hour 26
 }
 
-initconc<-1
+
 #4. drug concentration####
 drugconcentration<-function(t,initconc,drugloss,halflife){
   #t timestep
@@ -45,7 +48,7 @@ drugaction<-function(t,killrate,drugconcentration,ce50,h){
 }
 #overall killrate would be the sum of 2: artemisinin + partner drug
 
-h<-1
+
 ##6. NJW model main function + Immunity####
 K<-function(a,t,delay,tpar,parasites,k0){
   k0*(parasites/tpar)+a*(t/(delay))
@@ -58,7 +61,7 @@ K<-function(a,t,delay,tpar,parasites,k0){
 NJWIm<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,halflife,killrate,ce50,h){
   biglst<-matrix(0,nrow=runtime,ncol=lc) #store parasite age distribution
   druglst<-matrix(0,nrow=runtime,ncol=lc) #store drug effect or conc? not used in this function!!
-
+  
   lst <- InitAgeDistribution(initn,lc,mu,sig)
   biglst[1,]<-lst
   i=2
@@ -91,29 +94,10 @@ NJWIm<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,ha
   
   data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)))
   #output the log of total observable parasites
-
+  
 }
 
 
-library(manipulate)
-
-# NJW + Immunity
-manipulate(plot(NJWIm(initn,48,mu,sig,pmf,k0,a,tpar,delay,2400,initconc,0.693,halflife,killrate,ce50,h),xlim=c(0,245),ylim=c(0,8),type=show),
-           initn=slider(10,1000),
-           mu=slider(1,48),
-           sig=slider(1,48),
-           pmf=slider(1,30),
-           # k0=slider(0,1,step = 0.01),
-           # a=slider(0.0001,0.01,step = 0.001),
-           # tpar=slider(1000,100000,step = 10),
-           # delay=slider(0,4,step=1),
-           initconc=slider(25,150,step=5),
-           halflife=slider(5,240,step=1),
-           killrate=slider(0.001,1,step=0.05),
-           ce50=slider(10,100,step=5),
-           h=slider(1,10,step=1),
-           show=picker("line"="l", "points"="p")
-)
 
 #8. drug concentration over time (drug effect on the next function drugeff)####
 drugf<-function(runtime,initconc,drugloss,halflife,killrate,ce50,h){
@@ -140,14 +124,6 @@ drugf<-function(runtime,initconc,drugloss,halflife,killrate,ce50,h){
 }
 
 
-manipulate(plot(drugf(2400,initconc,0.693,halflife,killrate,ce50,h),xlim=c(0,245),ylim=c(0,80),type=show),
-           initconc=slider(25,150,step=5),
-           halflife=slider(5,240,step=1),
-           killrate=slider(0.001,1,step=0.05),
-           ce50=slider(10,100,step=5),
-           h=slider(1,10,step=1),
-           show=picker("line"="l", "points"="p")
-)
 
 #9. drug effect over time (drug concentration is on the previous function drugf)####
 drugeff<-function(runtime,initconc,drugloss,halflife,killrate,ce50,h){
@@ -172,45 +148,3 @@ drugeff<-function(runtime,initconc,drugloss,halflife,killrate,ce50,h){
   data.frame(time=seq(1,runtime),log10=druglst[,2]) #<- only difference is here (column subset:2)
   
 }
-manipulate(plot(drugeff(2400,initconc,0.693,halflife,killrate,ce50,h),xlim=c(0,125),ylim=c(0,100),type=show),
-      initconc=slider(25,150,step=5),
-      halflife=slider(5,240,step=1),
-      killrate=slider(1,100,step=0.5),
-      ce50=slider(10,100,step=5),
-      h=slider(1,10,step=1),
-      show=picker("line"="l", "points"="p")
-)
-
-
-
-# ### plot model output and data
-# PlotDatNJW<-function(data,initn,mu,sig,pmf,k0,a,tpar,delay){
-#   
-#   tmp<-NJWIm(initn,48,mu,sig,pmf,k0,a,tpar,delay,2400)[seq(1,7)*24,]
-#   NJWout<-data.frame(day=seq(1,7),log10=tmp$log10)
-#   
-#   plot(data[,c(1,3)],type="b",xlim=c(0,8),ylim=c(0,8),ylab="",xlab="")
-#   par(new=TRUE)
-#   plot(NJWout,type="l",xlim=c(0,8),ylim=c(0,8),col = "red",xlab="day",
-#        ylab="log10(parasitaemia)")
-#   
-#   legend(6,7,c("data","model"),lty=c(1,1), lwd=c(1,1), col=c("black","red") )
-#   
-# }
-# 
-# data1<-data.frame(day=c(1,2,3,4,5,6,7),
-#                   asex=c(273,31,12160,60,24300,386,16040),
-#                   log=log10(c(273,31,12160,60,24300,386,16040)));
-# 
-# manipulate(  
-#   PlotDatNJW(data1,initn,mu,sig,pmf,k0,a,tpar,delay),
-#   initn=slider(10,1000),
-#   mu=slider(1,48),
-#   sig=slider(1,48),
-#   pmf=slider(1,30),
-#   k0=slider(0,0.1),
-#   a=slider(0.0001,0.01),
-#   delay=slider(1,4),
-#   tpar=slider(1000,10000)
-# )
-# 
