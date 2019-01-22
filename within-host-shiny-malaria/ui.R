@@ -17,8 +17,7 @@ shinyUI(fluidPage(
       sliderInput("h", "h: ", min = 1, max = 10, value =1, step =1)
     ),
     mainPanel(
-      plotOutput("NJWimPlot"),
-      plotOutput("drugfPlot"),
+      plotOutput("combinedPlot"),
       plotOutput("drugeffPlot")
     )
   )
