@@ -148,3 +148,30 @@ drugeff<-function(runtime,initconc,drugloss,halflife,killrate,ce50,h){
   data.frame(time=seq(1,runtime),log10=druglst[,2]) #<- only difference is here (column subset:2)
   
 }
+
+
+#10. takes 2 drugs: simulate parasite age distribution over time after taking a single dose of artemisinin####
+NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,halflife,killrate,ce50,h, initconc_2,drugloss_2,halflife_2,killrate_2,ce50_2){
+  biglst<-matrix(0,nrow=runtime,ncol=lc) #store parasite age distribution
+  druglst<-matrix(0,nrow=runtime,ncol=lc) #store drug effect or conc? not used in this function!!
+  
+  lst <- InitAgeDistribution(initn,lc,mu,sig)
+  biglst[1,]<-lst
+  i=2
+  while(i <= runtime)
+  {
+    drugconc_1<-drugconcentration(i,initconc,drugloss,halflife)
+    drugeffect_1<-drugaction(i,killrate,drugconc_1,ce50,h)
+    
+    drugconc_2<-drugconcentration(i,initconc_2,drugloss_2,halflife_2)
+    drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2,h)
+    
+    lst<-ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2))
+    biglst[i,]<-lst
+    i<-i+1   
+  }
+  
+  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)))
+  #output the log of total observable parasites
+  
+}
