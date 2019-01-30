@@ -20,6 +20,17 @@ shinyServer(function(input, output, session) {
     updateSliderInput(session, "sen_2", value = 1)
   })
   
+  output$paraPlot <- renderPlot({
+    parasiteDensity_2D <- reactive(NJWIm_2(initn_R(),48,input$mu,input$sig,input$pmf,k0,a,tpar,delay,2400,input$initconc,0.693,input$halflife,
+                                           killrate_R(),input$ce50,input$h, input$initconc_2,0.693,input$halflife_2,
+                                           killrate_2_R(),input$ce50_2))
+    
+    plot(parasiteDensity_2D(), xlab="Time (hours)", ylab="Parasite density (log10)",xlim=c(0,245),ylim=c(0,10), type = 'l')
+    text(x = 120, y=7, paste("Sum of observable parasites: ", sum(round(parasiteDensity_2D()[,2]))))
+    #axis(2, col="black", col.axis="black", las=1)
+    #mtext("Parasite density (log10)", side=2, col="black", line=3)
+  })
+  
   output$combinedPlot <- renderPlot({
     # parasiteDensity <- reactive(NJWIm(initn_R(),48,input$mu,input$sig,input$pmf,k0,a,tpar,delay,2400,input$initconc,0.693,input$halflife,
     #                                   input$killrate,input$ce50,input$h))

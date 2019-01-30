@@ -30,6 +30,7 @@ shinyUI(fluidPage(
       sliderInput("ce50_2", "CE50, drug B: ", min = 10, max = 100, value = 30, step = 5)
     ),
     mainPanel(
+      plotOutput("paraPlot"),
       plotOutput("combinedPlot"),
       plotOutput("drugeffPlot")
     )
