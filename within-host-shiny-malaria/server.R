@@ -3,11 +3,22 @@ library(shiny)
 #utility functions go here
 source("UtilityFunctions.R", local = TRUE)
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   
   initn_R <- reactive(10^input$initn) #initial parasites in 10-power scale
   killrate_R <- reactive(input$killrate*input$sen) #killrate adjusted by sensitivity
   killrate_2_R <- reactive(input$killrate_2*input$sen_2)
+  
+  #toggle
+  observeEvent(input$aSen, {
+    updateSliderInput(session, "sen", value = 1)
+    updateSliderInput(session, "sen_2", value = .5)
+  })
+  
+  observeEvent(input$bSen, {
+    updateSliderInput(session, "sen", value = .5)
+    updateSliderInput(session, "sen_2", value = 1)
+  })
   
   output$combinedPlot <- renderPlot({
     # parasiteDensity <- reactive(NJWIm(initn_R(),48,input$mu,input$sig,input$pmf,k0,a,tpar,delay,2400,input$initconc,0.693,input$halflife,

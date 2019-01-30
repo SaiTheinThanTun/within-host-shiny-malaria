@@ -12,6 +12,11 @@ shinyUI(fluidPage(
       sliderInput("sig", "SD of initial age distribution: ", min = 1, max=48, value = 7),
       sliderInput("pmf", "Parasite Multiplication factor: ", min = 8, max=10, value=1),
       sliderInput("h", "h: ", min = 1, max = 10, value =4, step =1),
+      
+      p("Sensitivity to drug toggle:"),
+      actionButton("aSen", "A:100%, B:50%"),
+      actionButton("bSen", "A:50%, B:100%"), 
+      
       sliderInput("initconc", "Initial drug A concentration: ", min = 25, max=150, value = 72, step = 5 ),
       sliderInput("halflife", "Drug A halflife: ", min = 5, max=240, value=54, step = 1),
       sliderInput("killrate", "Kill rate, drug A: ", min = .05, max = .4, value = .2, step = .05),
