@@ -64,9 +64,15 @@ NJWIm<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,ha
   
   lst <- InitAgeDistribution(initn,lc,mu,sig)
   biglst[1,]<-lst
+  
+  #to identify where is MIC
+  growing <- rep(NA,runtime)
+  growing[1] <- FALSE
+  
   i=2
   while(i <= runtime)
   {
+    priorLst <- sum(lst)
     #sai: not required anymore
     #if(i==0){parasites=initn}
     #else{parasites<-sum(biglst[i-1,])}
@@ -88,12 +94,18 @@ NJWIm<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,ha
     drugconc<-drugconcentration(i,initconc,drugloss,halflife)
     drugeffect<-drugaction(i,killrate,drugconc,ce50,h)
     lst<-ShiftOneHour(lst,pmf)*exp(-drugeffect)
-    lst <- ((lst<=0)*0)+((lst>0)*lst)
+    #lst <- ((lst<=0)*0)+((lst>0)*lst)
+    afterLst <- sum(lst)
     biglst[i,]<-lst
+    
+    if((afterLst-priorLst)<0){
+      growing[i] <- FALSE
+    } else {growing[i] <- TRUE}
+    
     i<-i+1   
   }
   
-  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)))
+  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), MIC=growing)
   #output the log of total observable parasites
   
 }
@@ -166,8 +178,8 @@ NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,
     
     drugconc_2<-drugconcentration(i,initconc_2,drugloss_2,halflife_2)
     drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2,h)
-    
-    lst<-((lst<=0)*0)+((lst>0)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2)))
+    lst <-ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2))
+    #lst<-((lst<=0)*0)+((lst>0)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2)))
     #lst <- ((lst<=0)*0)+((lst>0)*lst)
     #tmp <- c(1,1,2,0,0,3,-10,-2, -5,-9)
     #((tmp<=0)*0)+((tmp>0)*tmp)
@@ -176,7 +188,12 @@ NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,
     i<-i+1   
   }
   
-  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)))
+  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), normal=apply(biglst,1,countrings))
   #output the log of total observable parasites
-  
 }
+
+
+# the reason MIC is reached but the total observable parasites keeps falling is because
+# 1. the way the drug effec is modelled (affecting all ages of parasites)
+#     is different from the way the paraistes are multiplied (only those reaching the oldest age)
+# 2. MIC is calulated based on all parasites. plot is only on observable parasites

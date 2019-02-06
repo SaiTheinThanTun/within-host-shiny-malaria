@@ -228,3 +228,5 @@ outd <- WhereIsMIC(10000,48,28,7,8,2400,72,0.693,54,.2,15,4)
 head(outd)
 tail(outd)
 which(outd$MIC==TRUE)[1]
+length(which(outd$MIC==TRUE))
+#==(seq(152, to=2400))
