@@ -85,15 +85,21 @@ NJWIm<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,ha
     drugconc<-drugconcentration(i,initconc,drugloss,halflife)
     drugeffect<-drugaction(i,killrate,drugconc,ce50,h)
     lst<-ShiftOneHour(lst,pmf)*exp(-drugeffect)
+    lst <- ((lst<=0)*0)+((lst>0)*lst) #test
     biglst[i,]<-lst
     i<-i+1   
   }
   
-  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)))
+  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)) ) #,normal=apply(biglst,1,countrings))
   #output the log of total observable parasites
 
 }
 
+#testing
+outd <- NJWIm(10000,48,28,7,8,0,0,0,0,2400,72,0.693,54,.2,15,4)
+head(outd)
+min(outd[,2]) #-3.99315
+#min(outd[,3]) #0.0001015897
 
 library(manipulate)
 

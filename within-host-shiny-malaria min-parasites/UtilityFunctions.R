@@ -93,7 +93,7 @@ NJWIm<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,ha
     i<-i+1   
   }
   
-  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)))
+  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), normal=apply(biglst,1,countrings))
   #output the log of total observable parasites
   
 }
@@ -151,6 +151,8 @@ drugeff<-function(runtime,initconc,drugloss,halflife,killrate,ce50,h){
 }
 
 
+
+
 #10. takes 2 drugs: simulate parasite age distribution over time after taking a single dose of artemisinin####
 NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,halflife,killrate,ce50,h, initconc_2,drugloss_2,halflife_2,killrate_2,ce50_2){
   biglst<-matrix(0,nrow=runtime,ncol=lc) #store parasite age distribution
@@ -176,7 +178,53 @@ NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,
     i<-i+1   
   }
   
-  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)))
+  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), normal=apply(biglst,1,countrings))
   #output the log of total observable parasites
   
 }
+
+
+#to find out MIC####
+#Minimal Inhibitory Concentration is the concentration when pmf equals 1
+
+WhereIsMIC<-function(initn,lc,mu,sig,pmf,runtime,initconc,drugloss,halflife,killrate,ce50,h){
+  biglst<-matrix(0,nrow=runtime,ncol=lc) #store parasite age distribution
+  druglst<-matrix(0,nrow=runtime,ncol=lc) #store drug effect or conc? not used in this function!!
+  
+  lst <- InitAgeDistribution(initn,lc,mu,sig)
+  biglst[1,]<-lst
+  growing <- rep(NA,runtime)
+  growing[1] <- FALSE
+  i=2
+  while(i <= runtime)
+  {
+    priorLst <- sum(lst)
+    
+    drugconc<-drugconcentration(i,initconc,drugloss,halflife)
+    drugeffect<-drugaction(i,killrate,drugconc,ce50,h)
+    lst<-ShiftOneHour(lst,pmf)*exp(-drugeffect)
+    #lst <- ((lst<=0)*0)+((lst>0)*lst)
+    afterLst <- sum(lst)
+    biglst[i,]<-lst
+    
+    if((afterLst-priorLst)<0){
+      growing[i] <- FALSE
+    } else {growing[i] <- TRUE}
+    
+    i<-i+1   
+
+   
+    
+  }
+  
+  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), normal=apply(biglst,1,countrings), MIC=growing)
+  #output the log of total observable parasites
+  
+}
+
+#WhereIsMIC<-function(initn,lc,mu,sig,pmf,runtime,initconc,drugloss,halflife,killrate,ce50,h)
+#testing
+outd <- WhereIsMIC(10000,48,28,7,8,2400,72,0.693,54,.2,15,4)
+head(outd)
+tail(outd)
+which(outd$MIC==TRUE)[1]
