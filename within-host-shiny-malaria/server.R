@@ -31,11 +31,13 @@ shinyServer(function(input, output, session) {
                                            killrate_R(),input$ce50,input$h, input$initconc_2,0.693,input$halflife_2,
                                            killrate_2_R(),input$ce50_2))
     
-    plot(x=parasiteDensity_2D()[,1],y=parasiteDensity_2D()[,2], xlab="Time (hours)", ylab="Parasite density (log10)",xlim=c(0,245),ylim=c(0,10), type = 'l')
-    text(x = 120, y=7, paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_2D()[,2]))))
-    abline(v=which(whereIsMIC_D1_R()==TRUE)[1], col="blue")
-    abline(v=which(whereIsMIC_D2_R()==TRUE)[1], col="red")
-    legend(150, 9.5, legend = c("MIC of drug A", "MIC of drug B"), col = c("blue", "red"), lty = 1)
+    plot(x=parasiteDensity_2D()[,1],y=parasiteDensity_2D()[,2], xlab="Time (hours)", ylab="Parasite density (log10)",xlim=c(0,1200),ylim=c(0,10), type = 'l')
+    text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(log10(sum(parasiteDensity_2D()[,3]))))) #paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_2D()[,2]))))
+    #abline(v=which(whereIsMIC_D1_R()==TRUE)[1], col="blue")
+    #abline(v=which(whereIsMIC_D2_R()==TRUE)[1], col="red")
+    abline(v=TrueMIC(whereIsMIC_D1_R()), col="blue")
+    abline(v=TrueMIC(whereIsMIC_D2_R()), col="red")
+    legend(600, 9.5, legend = c("MIC of drug A", "MIC of drug B"), col = c("blue", "red"), lty = 1)
   })
   
   output$combinedPlot <- renderPlot({
@@ -43,18 +45,18 @@ shinyServer(function(input, output, session) {
     drugConc_B <- reactive(drugf(2400,input$initconc_2,0.693,input$halflife_2,killrate_2_R(),input$ce50_2,input$h))
     
     #par(mar=c(5, 4, 4, 6) + 0.1)
-    plot(drugConc_A(),xlab="Time (hours)", ylab="Drug concentration (log10)",xlim=c(0,245),ylim=c(0,max(c(80,max(drugConc_A()[,2]),max(drugConc_B()[,2])))), type = 'l', col="blue")
+    plot(drugConc_A(),xlab="Time (hours)", ylab="Drug concentration (log10)",xlim=c(0,400),ylim=c(0,max(c(80,max(drugConc_A()[,2]),max(drugConc_B()[,2])))), type = 'l', col="blue")
     par(new=TRUE)
-    plot(drugConc_B(), axes=FALSE,xlab="", ylab="",xlim=c(0,245),ylim=c(0,max(c(80,max(drugConc_A()[,2]),max(drugConc_B()[,2])))), type = 'l', col="red")
+    plot(drugConc_B(), axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(80,max(drugConc_A()[,2]),max(drugConc_B()[,2])))), type = 'l', col="red")
     legend(150, 60, legend = c("A", "B"), col = c("blue", "red"), lty = 1)
   })
   
   output$drugeffPlot <- renderPlot({
     drugEff_A <- reactive(drugeff(2400,input$initconc,0.693,input$halflife,1000*killrate_R(),input$ce50,input$h))
     drugEff_B <- reactive(drugeff(2400,input$initconc_2,0.693,input$halflife_2,1000*killrate_2_R(),input$ce50_2,input$h))
-    plot(drugEff_A(), xlim=c(0,245),ylim=c(0,max(c(100,max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l', ylab="Drug effect (1000*log10)", col="blue")
+    plot(drugEff_A(), xlim=c(0,400),ylim=c(0,max(c(100,max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l', ylab="Drug effect (1000*log10)", col="blue")
     par(new=TRUE)
-    plot(drugEff_B(), axes=FALSE, xlab="", ylab="", xlim=c(0,245),ylim=c(0,max(c(100,max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l',  col="red")
+    plot(drugEff_B(), axes=FALSE, xlab="", ylab="", xlim=c(0,400),ylim=c(0,max(c(100,max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l',  col="red")
   })
   
 

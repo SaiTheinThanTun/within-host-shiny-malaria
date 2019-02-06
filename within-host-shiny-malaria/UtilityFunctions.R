@@ -178,7 +178,8 @@ NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,
     
     drugconc_2<-drugconcentration(i,initconc_2,drugloss_2,halflife_2)
     drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2,h)
-    lst <-ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2))
+    #lst <-ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2))
+    lst<-((lst<1)*0)+((lst>=1)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2)))
     #lst<-((lst<=0)*0)+((lst>0)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2)))
     #lst <- ((lst<=0)*0)+((lst>0)*lst)
     #tmp <- c(1,1,2,0,0,3,-10,-2, -5,-9)
@@ -192,6 +193,22 @@ NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,
   #output the log of total observable parasites
 }
 
+#11. finding MIC
+TrueMIC <- function(MICvector){
+  logicalSwitch <- FALSE
+  trueMIC <- 0
+  for(i in 1:length(MICvector)){
+    if(!isTRUE(MICvector[i])){
+      logicalSwitch <- FALSE
+      trueMIC <- 0
+    }
+    if(isTRUE(MICvector[i]) && !logicalSwitch){
+      logicalSwitch <- TRUE
+      trueMIC <- i
+    }
+  }
+  trueMIC
+}
 
 # the reason MIC is reached but the total observable parasites keeps falling is because
 # 1. the way the drug effec is modelled (affecting all ages of parasites)

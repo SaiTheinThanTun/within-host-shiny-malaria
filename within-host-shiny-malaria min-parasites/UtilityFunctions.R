@@ -230,3 +230,22 @@ tail(outd)
 which(outd$MIC==TRUE)[1]
 length(which(outd$MIC==TRUE))
 #==(seq(152, to=2400))
+
+#11. finding MIC
+TrueMIC <- function(MICvector){
+  logicalSwitch <- FALSE
+  trueMIC <- 0
+  for(i in 1:length(MICvector)){
+    if(!isTRUE(MICvector[i])){
+      logicalSwitch <- FALSE
+      trueMIC <- 0
+    }
+    if(isTRUE(MICvector[i]) && !logicalSwitch){
+      logicalSwitch <- TRUE
+      trueMIC <- i
+    }
+  }
+  trueMIC
+}
+
+TrueMIC(outd$MIC)
