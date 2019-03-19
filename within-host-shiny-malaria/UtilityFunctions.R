@@ -38,6 +38,18 @@ drugconcentration<-function(t,initconc,drugloss,halflife){
   #initconc: initial concentration
   #drugloss: rate of drug loss?
   #halflife: time at which only 50% of original concentration will remain
+  firstDose <- initconc*exp(-drugloss*(t/halflife))
+  secondDose <- initconc*exp(-drugloss*(t/halflife))*1.24
+  thirdDose <- initconc*exp(-drugloss*(t/halflife))*1.24^2
+  
+  (firstDose) + ((t>=24)*secondDose) + ((t>=48)*thirdDose)
+}
+
+drugconcentration_obsolete<-function(t,initconc,drugloss,halflife){
+  #t timestep
+  #initconc: initial concentration
+  #drugloss: rate of drug loss?
+  #halflife: time at which only 50% of original concentration will remain
   initconc*exp(-drugloss*(t/halflife))
 }
 #so far only one dose
@@ -58,6 +70,7 @@ K<-function(a,t,delay,tpar,parasites,k0){
 #innate and 
 
 #7. simulate parasite age distribution over time after taking a single dose of artemisinin####
+#MIC detection is implemented here (not in NJWIm2, where 2 drugs are acting together) as it is separate for each drug#
 NJWIm<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,halflife,killrate,ce50,h){
   biglst<-matrix(0,nrow=runtime,ncol=lc) #store parasite age distribution
   druglst<-matrix(0,nrow=runtime,ncol=lc) #store drug effect or conc? not used in this function!!
@@ -93,7 +106,8 @@ NJWIm<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,ha
     #k<-K(a,i,delay,tpar,parasites,k0)
     drugconc<-drugconcentration(i,initconc,drugloss,halflife)
     drugeffect<-drugaction(i,killrate,drugconc,ce50,h)
-    lst<-ShiftOneHour(lst,pmf)*exp(-drugeffect)
+    #lst<-ShiftOneHour(lst,pmf)*exp(-drugeffect)
+    lst<-((lst<1)*0)+((lst>=1)*ShiftOneHour(lst,pmf)*exp(-drugeffect))
     #lst <- ((lst<=0)*0)+((lst>0)*lst)
     afterLst <- sum(lst)
     biglst[i,]<-lst

@@ -52,11 +52,13 @@ shinyServer(function(input, output, session) {
   })
   
   output$drugeffPlot <- renderPlot({
-    drugEff_A <- reactive(drugeff(2400,input$initconc,0.693,input$halflife,1000*killrate_R(),input$ce50,input$h))
-    drugEff_B <- reactive(drugeff(2400,input$initconc_2,0.693,input$halflife_2,1000*killrate_2_R(),input$ce50_2,input$h))
-    plot(drugEff_A(), xlim=c(0,400),ylim=c(0,max(c(100,max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l', ylab="Drug effect (1000*log10)", col="blue")
+    drugEff_A <- reactive(drugeff(2400,input$initconc,0.693,input$halflife,killrate_R(),input$ce50,input$h))
+    drugEff_B <- reactive(drugeff(2400,input$initconc_2,0.693,input$halflife_2,killrate_2_R(),input$ce50_2,input$h))
+    #plot(drugEff_A(), xlim=c(0,400),ylim=c(0,max(c(100,max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l', ylab="Drug effect", col="blue")
+    plot(drugEff_A(), xlim=c(0,400),ylim=c(0,max(c(max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l', xlab="Time (hours)", ylab="Drug effect", col="blue")
     par(new=TRUE)
-    plot(drugEff_B(), axes=FALSE, xlab="", ylab="", xlim=c(0,400),ylim=c(0,max(c(100,max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l',  col="red")
+    #plot(drugEff_B(), axes=FALSE, xlab="", ylab="", xlim=c(0,400),ylim=c(0,max(c(100,max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l',  col="red")
+    plot(drugEff_B(), axes=FALSE, xlab="", ylab="", xlim=c(0,400),ylim=c(0,max(c(max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l',  col="red")
   })
   
 
