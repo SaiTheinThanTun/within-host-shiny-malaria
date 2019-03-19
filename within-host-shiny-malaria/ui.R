@@ -7,7 +7,7 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       #sliderInput("initn", "Initial total parasites: ", min = 1000, max=10^10, value=100),
-      sliderInput("initn", "Log10 of Initial total parasites: ", min = 3, max=10, value=8.93, step=.01),
+      sliderInput("initn", "Log10 of Initial total parasites: ", min = 3, max=14, value=8.93, step=.01),
       sliderInput("mu", "Mean of initial age distribution: ", min = 1, max=48, value = 28),
       sliderInput("sig", "SD of initial age distribution: ", min = 1, max=48, value = 7),
       sliderInput("pmf", "Parasite Multiplication factor: ", min = 8, max=10, value=8),
