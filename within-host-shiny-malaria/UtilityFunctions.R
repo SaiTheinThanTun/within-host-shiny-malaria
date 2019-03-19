@@ -207,7 +207,42 @@ NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,
   #output the log of total observable parasites
 }
 
-#11. finding MIC
+#11. takes 3 drugs: simulate parasite age distribution over time after taking triple doses of respective drugs####
+NJWIm_3<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,halflife,killrate,ce50,h, 
+                  initconc_2,drugloss_2,halflife_2,killrate_2,ce50_2,
+                  initconc_3,drugloss_3,halflife_3,killrate_3,ce50_3){
+  biglst<-matrix(0,nrow=runtime,ncol=lc) #store parasite age distribution
+  druglst<-matrix(0,nrow=runtime,ncol=lc) #store drug effect or conc? not used in this function!!
+  
+  lst <- InitAgeDistribution(initn,lc,mu,sig)
+  biglst[1,]<-lst
+  i=2
+  while(i <= runtime)
+  {
+    drugconc_1<-drugconcentration(i,initconc,drugloss,halflife)
+    drugeffect_1<-drugaction(i,killrate,drugconc_1,ce50,h)
+    
+    drugconc_2<-drugconcentration(i,initconc_2,drugloss_2,halflife_2)
+    drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2,h)
+    
+    drugconc_3<-drugconcentration(i,initconc_3,drugloss_3,halflife_3)
+    drugeffect_3<-drugaction(i,killrate_3,drugconc_3,ce50_3,h)
+    #lst <-ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2))
+    lst<-((lst<1)*0)+((lst>=1)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2+drugeffect_3)))
+    #lst<-((lst<=0)*0)+((lst>0)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2)))
+    #lst <- ((lst<=0)*0)+((lst>0)*lst)
+    #tmp <- c(1,1,2,0,0,3,-10,-2, -5,-9)
+    #((tmp<=0)*0)+((tmp>0)*tmp)
+    
+    biglst[i,]<-lst
+    i<-i+1   
+  }
+  
+  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), normal=apply(biglst,1,countrings))
+  #output the log of total observable parasites
+}
+
+#12. finding MIC
 TrueMIC <- function(MICvector){
   logicalSwitch <- FALSE
   trueMIC <- 0
