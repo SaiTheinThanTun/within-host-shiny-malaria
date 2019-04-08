@@ -120,7 +120,7 @@ shinyServer(function(input, output, session) {
     plot(drugConc_B, axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2])))), type = 'l', col="red")
     par(new=TRUE)
     #plot(drugConc_C(), axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2]),max(drugConc_C()[,2])))), type = 'l', col="black")
-    #legend(150, 60, legend = c("A", "B", "C"), col = c("blue", "red", "black"), lty = 1)
+    #legend(150, 1, legend = c("DHA", "Piperaquine", "Drug C"), col = c("blue", "red", "black"), lty = 1)
     legend(150, 1, legend = c("DHA", "Piperaquine"), col = c("blue", "red"), lty = 1)
   })
   
@@ -136,6 +136,7 @@ shinyServer(function(input, output, session) {
     #par(new=TRUE)
     #plot(drugEff_C(), axes=FALSE, xlab="", ylab="", xlim=c(0,400),ylim=c(0,max(c(max(drugEff_A()[,2]),max(drugEff_B()[,2]),max(drugEff_C()[,2])))), type = 'l',  col="black")
     legend(150, .05, legend = c("DHA", "Piperaquine"), col = c("blue", "red"), lty = 1)
+    # legend(150, .05, legend = c("DHA", "Piperaquine", "Drug C"), col = c("blue", "red", "black"), lty = 1)
   })
   
 
