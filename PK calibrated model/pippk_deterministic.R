@@ -23,7 +23,7 @@ n=6
 
 # %time steps
 da=1 #0.001
-maxa=10*24
+maxa=100*24 #10*24
 asteps=maxa/da
 nasteps=asteps
 

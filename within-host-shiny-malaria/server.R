@@ -89,5 +89,21 @@ shinyServer(function(input, output, session) {
     plot(drugEff_C(), axes=FALSE, xlab="", ylab="", xlim=c(0,400),ylim=c(0,max(c(max(drugEff_A()[,2]),max(drugEff_B()[,2]),max(drugEff_C()[,2])))), type = 'l',  col="black")
   })
   
+  #new plots for DHApip calibrated model
+  output$paraPlot_DHApip <- renderPlot({
+    
+    parasiteDensity_DHApip <- reactive(NJWIm_DHApip(initn_R(),48,input$mu,input$sig,input$pmf,k0,a,tpar,delay,2400,
+                                           killrate_R(),input$ce50,input$h, 
+                                           killrate_2_R(),input$ce50_2))
+    
+    plot(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,2], xlab="Time (hours)", ylab="Parasite density (log10)",xlim=c(0,1200),ylim=c(0,10), type = 'l')
+    text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(log10(sum(parasiteDensity_DHApip()[,3]))))) #paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_DHApip()[,2]))))
+    
+    #TODO
+    # abline(v=TrueMIC(whereIsMIC_D1_R()), col="blue")
+    # abline(v=TrueMIC(whereIsMIC_D2_R()), col="red")
+    # legend(600, 9.5, legend = c("MIC of drug A", "MIC of drug B", "MIC is not correct yet!"), col = c("blue", "red", "black"), lty = 1)
+  })
+  
 
 })

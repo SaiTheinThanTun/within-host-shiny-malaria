@@ -48,7 +48,10 @@ shinyUI(fluidPage(
       column(4,plotOutput("paraPlot")),
       column(4,plotOutput("combinedPlot")),
       column(4,plotOutput("drugeffPlot"))
-    )
+    ),
+  fluidRow(
+    column(4,plotOutput("paraPlot_DHApip"))
+  )
   )
 )
 #)

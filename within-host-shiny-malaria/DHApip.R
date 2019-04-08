@@ -29,7 +29,7 @@ n=9
 # %time steps
 # %size of time step
 da=1 #.003
-days=10
+days= 100 #10
 # %maximum age in hours for 10 days period
 maxa=days*24
 # %no. of timesteps
@@ -222,7 +222,7 @@ PIPconc <- function(){
   
   # %time steps
   da=1 #0.001
-  maxa=10*24
+  maxa=100*24 #10*24
   asteps=maxa/da
   nasteps=asteps
   
@@ -415,3 +415,10 @@ PIPconc <- function(){
   
   
 }
+
+
+DHAconcentration <- DHAconc()
+PIPconcentration <- PIPconc()
+
+saveRDS(DHAconcentration, "DHAconc.RDS")
+saveRDS(PIPconcentration, "PIPconc.RDS")

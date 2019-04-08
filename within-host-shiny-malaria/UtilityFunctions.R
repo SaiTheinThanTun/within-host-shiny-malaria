@@ -46,16 +46,21 @@ drugconcentration<-function(t,initconc,drugloss,halflife){
 }
 
 #4.1. DHA or piperaquine concentration####
-source(DHApip)
-DHAconcentration <- DHAconc()
-PIPconcentration <- PIPconc()
+# source("DHApip.R")
+# DHAconcentration <- DHAconc()
+# PIPconcentration <- PIPconc()
+#sourcing the code takes a long time, therefore 
+#concentration data was saved in advance and loaded here
+DHAconcentration <- readRDS("data/DHAconc.RDS")
+PIPconcentration <- readRDS("data/PIPconc.RDS")
 SpecificDrugConc <- function(t, drugname){
   if(drugname=="DHA"){
-    DHAconcentration[t]
+    out <- DHAconcentration[t]
   }
   if(drugname=="pip"){
-    PIPconcentration[t]
+    out <- PIPconcentration[t]
   }
+  out
 }
 
 
@@ -282,7 +287,7 @@ TrueMIC <- function(MICvector){
 
 #13. NJWIm_DHApip() ####
 #copied from 10. takes 2 drugs: simulate parasite age distribution over time after taking a single dose of artemisinin####
-NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,halflife,killrate,ce50,h, initconc_2,drugloss_2,halflife_2,killrate_2,ce50_2){
+NJWIm_DHApip<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce50,h, killrate_2,ce50_2){
   biglst<-matrix(0,nrow=runtime,ncol=lc) #store parasite age distribution
   druglst<-matrix(0,nrow=runtime,ncol=lc) #store drug effect or conc? not used in this function!!
   
@@ -291,18 +296,13 @@ NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,
   i=2
   while(i <= runtime)
   {
-    drugconc_1<-drugconcentration(i,initconc,drugloss,halflife)
+    drugconc_1<-SpecificDrugConc(i,drugname="DHA")
     drugeffect_1<-drugaction(i,killrate,drugconc_1,ce50,h)
     
-    drugconc_2<-drugconcentration(i,initconc_2,drugloss_2,halflife_2)
+    drugconc_2<-SpecificDrugConc(i,drugname="pip")
     drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2,h)
-    #lst <-ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2))
     lst<-((lst<1)*0)+((lst>=1)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2)))
-    #lst<-((lst<=0)*0)+((lst>0)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2)))
-    #lst <- ((lst<=0)*0)+((lst>0)*lst)
-    #tmp <- c(1,1,2,0,0,3,-10,-2, -5,-9)
-    #((tmp<=0)*0)+((tmp>0)*tmp)
-    
+
     biglst[i,]<-lst
     i<-i+1   
   }
