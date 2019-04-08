@@ -112,6 +112,7 @@ NJWIm<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,ha
     afterLst <- sum(lst)
     biglst[i,]<-lst
     
+    #TODO
     if((afterLst-priorLst)<0){
       growing[i] <- FALSE
     } else {growing[i] <- TRUE}
@@ -146,7 +147,7 @@ drugf<-function(runtime,initconc,drugloss,halflife,killrate,ce50,h){
     i<-i+1   
   }
   
-  data.frame(time=seq(1,runtime),log10=druglst[,1]) #<- only difference is here (column subset:1)
+  data.frame(time=seq(1,runtime),log10=log10(druglst[,1])) #<- only difference is here (column subset:1)
   
 }
 
@@ -243,6 +244,7 @@ NJWIm_3<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,
 }
 
 #12. finding MIC
+#TODO
 TrueMIC <- function(MICvector){
   logicalSwitch <- FALSE
   trueMIC <- 0

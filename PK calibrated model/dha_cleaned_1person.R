@@ -181,8 +181,13 @@ ng=1*10^6
 mvv=vv[1,]
 semilogy(seq(0,maxa, by=da), mvv*ng/bl, type='l', xlim=c(0,71), ylim=c(0.5,10000), xlab="Time in hours")
 
+#
+semilogy(seq(0,maxa, by=da), mvv, type='l', xlim=c(0,71), ylim=c(0.5,10000), xlab="Time in hours")
+
 
 #checking out if the scale is correct
 vv[1,25]
 mvv[25]
 mvv[25]*ng/bl
+
+plot(seq(0,maxa, by=da), mvv, type='l')

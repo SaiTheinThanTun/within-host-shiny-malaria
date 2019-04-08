@@ -10,6 +10,7 @@ shinyServer(function(input, output, session) {
   killrate_2_R <- reactive(input$killrate_2*input$sen_2)
   killrate_3_R <- reactive(input$killrate_3*input$sen_3)
   
+  #TODO
   #MIC for 3rd drug hasn't be done as changes will still come to MIC #TODO
   #logical vector of where MIC is
   whereIsMIC_D1_R <- reactive(NJWIm(initn_R(),48,input$mu,input$sig,input$pmf,k0,a,tpar,delay,2400,input$initconc,0.693,input$halflife,
@@ -39,9 +40,11 @@ shinyServer(function(input, output, session) {
     text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(log10(sum(parasiteDensity_3D()[,3]))))) #paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_3D()[,2]))))
     #abline(v=which(whereIsMIC_D1_R()==TRUE)[1], col="blue")
     #abline(v=which(whereIsMIC_D2_R()==TRUE)[1], col="red")
-    abline(v=TrueMIC(whereIsMIC_D1_R()), col="blue")
-    abline(v=TrueMIC(whereIsMIC_D2_R()), col="red")
-    legend(600, 9.5, legend = c("MIC of drug A", "MIC of drug B", "MIC is not correct yet!"), col = c("blue", "red", "black"), lty = 1)
+    
+    #TODO
+    # abline(v=TrueMIC(whereIsMIC_D1_R()), col="blue")
+    # abline(v=TrueMIC(whereIsMIC_D2_R()), col="red")
+    # legend(600, 9.5, legend = c("MIC of drug A", "MIC of drug B", "MIC is not correct yet!"), col = c("blue", "red", "black"), lty = 1)
   })
   
   output$paraPlot_obsolete <- renderPlot({
@@ -65,11 +68,11 @@ shinyServer(function(input, output, session) {
     drugConc_C <- reactive(drugf(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h))
     
     #par(mar=c(5, 4, 4, 6) + 0.1)
-    plot(drugConc_A(),xlab="Time (hours)", ylab="Drug concentration (log10)",xlim=c(0,400),ylim=c(0,max(c(80,max(drugConc_A()[,2]),max(drugConc_B()[,2]),max(drugConc_C()[,2])))), type = 'l', col="blue")
+    plot(drugConc_A(),xlab="Time (hours)", ylab="Drug concentration (log10)",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A()[,2]),max(drugConc_B()[,2]),max(drugConc_C()[,2])))), type = 'l', col="blue")
     par(new=TRUE)
-    plot(drugConc_B(), axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(80,max(drugConc_A()[,2]),max(drugConc_B()[,2]),max(drugConc_C()[,2])))), type = 'l', col="red")
+    plot(drugConc_B(), axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A()[,2]),max(drugConc_B()[,2]),max(drugConc_C()[,2])))), type = 'l', col="red")
     par(new=TRUE)
-    plot(drugConc_C(), axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(80,max(drugConc_A()[,2]),max(drugConc_B()[,2]),max(drugConc_C()[,2])))), type = 'l', col="black")
+    plot(drugConc_C(), axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A()[,2]),max(drugConc_B()[,2]),max(drugConc_C()[,2])))), type = 'l', col="black")
     legend(150, 60, legend = c("A", "B", "C"), col = c("blue", "red", "black"), lty = 1)
   })
   
