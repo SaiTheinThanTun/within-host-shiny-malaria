@@ -45,6 +45,20 @@ drugconcentration<-function(t,initconc,drugloss,halflife){
   (firstDose) + ((t>=24)*secondDose) + ((t>=48)*thirdDose)
 }
 
+#4.1. DHA or piperaquine concentration####
+source(DHApip)
+DHAconcentration <- DHAconc()
+PIPconcentration <- PIPconc()
+SpecificDrugConc <- function(t, drugname){
+  if(drugname=="DHA"){
+    DHAconcentration[t]
+  }
+  if(drugname=="pip"){
+    PIPconcentration[t]
+  }
+}
+
+
 drugconcentration_obsolete<-function(t,initconc,drugloss,halflife){
   #t timestep
   #initconc: initial concentration

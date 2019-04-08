@@ -14,7 +14,8 @@
 library(Matrix)
 library(pracma)
 
-
+DHAconc <- function(){
+  
 npeople = 1
 dosing = 40
 # % flag = pregnant
@@ -165,29 +166,33 @@ vv=matrix(0,npeople,asteps+1)
   }
   
   # % keep solution for compartment 2 for each individual
-  vv[1,]=v[2,] #1 person version
-  
-  xticktimes=seq(from=24,by=24,to=maxa)
-  xticklabels=1:10
-  v[2,ncol(v)]=NaN
+  vv[1,]=v[2,] #1 person version, matrix
+  vv2 <- v[2,]
+  vv2
+}
+  # xticktimes=seq(from=24,by=24,to=maxa)
+  # xticklabels=1:10
+  # v[2,ncol(v)]=NaN
 
 #toc
 
-# millitres of blood in adult
-bl=4.5*1000
-# nanograms in miligrams
-ng=1*10^6
+# # millitres of blood in adult
+# bl=4.5*1000
+# # nanograms in miligrams
+# ng=1*10^6
+# 
+# mvv=vv[1,]
+# semilogy(seq(0,maxa, by=da), mvv*ng/bl, type='l', xlim=c(0,71), ylim=c(0.5,10000), xlab="Time in hours")
+# 
+# #
+# semilogy(seq(0,maxa, by=da), mvv, type='l', xlim=c(0,71), ylim=c(0.5,10000), xlab="Time in hours")
+# 
+# 
+# #checking out if the scale is correct
+# vv[1,25]
+# mvv[25]
+# mvv[25]*ng/bl
+# 
+# plot(seq(0,maxa, by=da), mvv, type='l')
 
-mvv=vv[1,]
-semilogy(seq(0,maxa, by=da), mvv*ng/bl, type='l', xlim=c(0,71), ylim=c(0.5,10000), xlab="Time in hours")
 
-#
-semilogy(seq(0,maxa, by=da), mvv, type='l', xlim=c(0,71), ylim=c(0.5,10000), xlab="Time in hours")
-
-
-#checking out if the scale is correct
-vv[1,25]
-mvv[25]
-mvv[25]*ng/bl
-
-plot(seq(0,maxa, by=da), mvv, type='l')
