@@ -105,5 +105,38 @@ shinyServer(function(input, output, session) {
     # legend(600, 9.5, legend = c("MIC of drug A", "MIC of drug B", "MIC is not correct yet!"), col = c("blue", "red", "black"), lty = 1)
   })
   
+  output$DHA_PIP_Plot <- renderPlot({
+    drugConc_A <- DHAconcentration #reactive(drugf(2400,input$initconc,0.693,input$halflife,killrate_R(),input$ce50,input$h))
+    drugConc_A[,2] <- log10(drugConc_A[,2])
+    drugConc_B <- PIPconcentration #reactive(drugf(2400,input$initconc_2,0.693,input$halflife_2,killrate_2_R(),input$ce50_2,input$h))
+    drugConc_B[,2] <- log10(drugConc_B[,2])
+    #drugConc_C <- reactive(drugf(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h))
+    
+    #par(mar=c(5, 4, 4, 6) + 0.1)
+    #plot(drugConc_A,xlab="Time (hours)", ylab="Drug concentration (log10)",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2]),max(drugConc_C()[,2])))), type = 'l', col="blue")
+    plot(drugConc_A,xlab="Time (hours)", ylab="Drug concentration (log10)",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2])))), type = 'l', col="blue")
+    par(new=TRUE)
+    #plot(drugConc_B, axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2]),max(drugConc_C()[,2])))), type = 'l', col="red")
+    plot(drugConc_B, axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2])))), type = 'l', col="red")
+    par(new=TRUE)
+    #plot(drugConc_C(), axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2]),max(drugConc_C()[,2])))), type = 'l', col="black")
+    #legend(150, 60, legend = c("A", "B", "C"), col = c("blue", "red", "black"), lty = 1)
+    legend(150, 1, legend = c("DHA", "Piperaquine"), col = c("blue", "red"), lty = 1)
+  })
+  
+  output$drugeffPlot_DHApip <- renderPlot({
+    drugEff_A <- reactive(SpecificDrugEffect(2400,"DHA",killrate_R(),input$ce50,input$h))
+    drugEff_B <- reactive(SpecificDrugEffect(2400,"pip",killrate_2_R(),input$ce50_2,input$h))
+    #drugEff_C <- reactive(drugeff(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h))
+    plot(drugEff_A(), xlim=c(0,400),ylim=c(0,max(c(max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l', ylab="Drug effect", col="blue")
+    #plot(drugEff_A(), xlim=c(0,400),ylim=c(0,max(c(max(drugEff_A()[,2]),max(drugEff_B()[,2]),max(drugEff_C()[,2])))), type = 'l', xlab="Time (hours)", ylab="Drug effect", col="blue")
+    par(new=TRUE)
+    plot(drugEff_B(), axes=FALSE, xlab="", ylab="", xlim=c(0,400),ylim=c(0,max(c(max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l',  col="red")
+    #plot(drugEff_B(), axes=FALSE, xlab="", ylab="", xlim=c(0,400),ylim=c(0,max(c(max(drugEff_A()[,2]),max(drugEff_B()[,2]),max(drugEff_C()[,2])))), type = 'l',  col="red")
+    #par(new=TRUE)
+    #plot(drugEff_C(), axes=FALSE, xlab="", ylab="", xlim=c(0,400),ylim=c(0,max(c(max(drugEff_A()[,2]),max(drugEff_B()[,2]),max(drugEff_C()[,2])))), type = 'l',  col="black")
+    legend(150, .05, legend = c("DHA", "Piperaquine"), col = c("blue", "red"), lty = 1)
+  })
+  
 
 })

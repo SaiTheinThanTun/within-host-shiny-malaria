@@ -31,7 +31,7 @@ n=9
 da=1 #.003
 days= 100 #10
 # %maximum age in hours for 10 days period
-maxa=days*24
+maxa= (days*24)-1
 # %no. of timesteps
 asteps=maxa/da
 nasteps=asteps
@@ -168,7 +168,8 @@ vv=matrix(0,npeople,asteps+1)
   # % keep solution for compartment 2 for each individual
   vv[1,]=v[2,] #1 person version, matrix
   vv2 <- v[2,]
-  vv2
+  # vv2
+  data.frame(time=seq(1,maxa+1),normal=(vv2))
 }
   # xticktimes=seq(from=24,by=24,to=maxa)
   # xticklabels=1:10
@@ -222,7 +223,7 @@ PIPconc <- function(){
   
   # %time steps
   da=1 #0.001
-  maxa=100*24 #10*24
+  maxa=(100*24)-1 #10*24
   asteps=maxa/da
   nasteps=asteps
   
@@ -400,7 +401,9 @@ PIPconc <- function(){
     # vv(jj,:)=v(2,:);
     #vv[jj,]=v[2,]#matrix output
     vv2 <- v[2,]
-    vv2
+    # vv2
+    data.frame(time=seq(1,maxa+1),normal=(vv2))
+    
     # xticktimes=(24:24*5:maxa);
     # xticklabels=(1:100);
     # v(2,end)=NaN;

@@ -55,10 +55,10 @@ DHAconcentration <- readRDS("data/DHAconc.RDS")
 PIPconcentration <- readRDS("data/PIPconc.RDS")
 SpecificDrugConc <- function(t, drugname){
   if(drugname=="DHA"){
-    out <- DHAconcentration[t]
+    out <- DHAconcentration[t,2]
   }
   if(drugname=="pip"){
-    out <- PIPconcentration[t]
+    out <- PIPconcentration[t,2]
   }
   out
 }
@@ -196,6 +196,29 @@ drugeff<-function(runtime,initconc,drugloss,halflife,killrate,ce50,h){
   
 }
 
+#9.1 DHA and piperaquine drug effect over time (drug concentration is on the previous function drugf)####
+SpecificDrugEffect<-function(runtime,drugname, killrate,ce50,h){
+  druglst<-matrix(0,nrow=runtime,ncol=2)
+  
+  drugc <- SpecificDrugConc(1, drugname) #drugconcentration(1,initconc,drugloss,halflife)
+  druglst[1,1]<-drugc
+  
+  druge<-drugaction(1,killrate,drugc,ce50,h)
+  druglst[1,2]<-druge
+  
+  i=2
+  while(i <= runtime)
+  {
+    drugconc<-SpecificDrugConc(i, drugname) #drugconcentration(i,initconc,drugloss,halflife)
+    drugeffect<-drugaction(i,killrate,drugconc,ce50,h)
+    druglst[i,1]<-drugconc
+    druglst[i,2]<-drugeffect
+    i<-i+1   
+  }
+  
+  data.frame(time=seq(1,runtime),log10=druglst[,2]) #<- only difference is here (column subset:2)
+  
+}
 
 #10. takes 2 drugs: simulate parasite age distribution over time after taking a single dose of artemisinin####
 NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,halflife,killrate,ce50,h, initconc_2,drugloss_2,halflife_2,killrate_2,ce50_2){
