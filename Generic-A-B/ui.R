@@ -2,7 +2,7 @@ library(shiny)
 
 shinyUI(fluidPage(
   
-  titlePanel("Within Host Drug Action"),
+  titlePanel("Within Host Drug Action: Generic for drug A & B"),
   
   # sidebarLayout(
   #   sidebarPanel(
@@ -30,15 +30,16 @@ shinyUI(fluidPage(
       sliderInput("killrate_2", "Kill rate, drug B: ", min = 0, max = .4, value = .1, step = .01),
       sliderInput("sen_2", "Sensitivity, drug B: ", min = .00, max = 1.00, value = 1, step = .01),
       sliderInput("ce50_2", "CE50, drug B: ", min = 10, max = 100, value = 30, step = 5)
-      ),
-      column(3,
-      #drug3
-      sliderInput("initconc_3", "Initial drug C concentration: ", min = 25, max=150, value = 60, step = 5 ),
-      sliderInput("halflife_3", "Drug C halflife: ", min = 5, max=400, value=24, step = 1),
-      sliderInput("killrate_3", "Kill rate, drug C: ", min = 0, max = .4, value = .15, step = .01),
-      sliderInput("sen_3", "Sensitivity, drug C: ", min = .00, max = 1.00, value = .8, step = .01),
-      sliderInput("ce50_3", "CE50, drug C: ", min = 10, max = 100, value = 25, step = 5)
       )
+    # ,
+    #   column(3,
+    #   #drug3
+    #   sliderInput("initconc_3", "Initial drug C concentration: ", min = 25, max=150, value = 60, step = 5 ),
+    #   sliderInput("halflife_3", "Drug C halflife: ", min = 5, max=400, value=24, step = 1),
+    #   sliderInput("killrate_3", "Kill rate, drug C: ", min = 0, max = .4, value = .15, step = .01),
+    #   sliderInput("sen_3", "Sensitivity, drug C: ", min = .00, max = 1.00, value = .8, step = .01),
+    #   sliderInput("ce50_3", "CE50, drug C: ", min = 10, max = 100, value = 25, step = 5)
+    #   )
      ),
   fluidRow(p("Sensitivity to drug, toggle:"),
            actionButton("aSen", "A:100%, B:50%"),
@@ -48,12 +49,13 @@ shinyUI(fluidPage(
       column(4,plotOutput("paraPlot")),
       column(4,plotOutput("combinedPlot")),
       column(4,plotOutput("drugeffPlot"))
-    ),
-  fluidRow(
-    column(4,plotOutput("paraPlot_DHApip")),
-    column(4,plotOutput("DHA_PIP_Plot")),
-    column(4,plotOutput("drugeffPlot_DHApip"))
-  )
+    )
+  # ,
+  # fluidRow(
+  #   column(4,plotOutput("paraPlot_DHApip")),
+  #   column(4,plotOutput("DHA_PIP_Plot")),
+  #   column(4,plotOutput("drugeffPlot_DHApip"))
+  # )
   )
 )
 #)

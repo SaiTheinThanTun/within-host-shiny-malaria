@@ -2,7 +2,7 @@ library(shiny)
 
 shinyUI(fluidPage(
   
-  titlePanel("Within Host Drug Action"),
+  titlePanel("Within Host Drug Action: DHA & piperaquine only"),
   
   # sidebarLayout(
   #   sidebarPanel(
