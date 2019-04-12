@@ -17,7 +17,9 @@ clear all
 
 
 npeople = 1;
-dosing = 40;
+%dosing = 40;
+%dosing = 40*ng/bl; ng and bl defined near the end
+dosing = 8.8889e+03; %not correct either as concentration should be between 10^2 and 10^3
 % flag = pregnant
 % para is initial parasitaemia
 % scale is the natural log of patient parasitaemia
@@ -184,7 +186,8 @@ mvv=vv(1,:);
 figure(3)
 semilogy((0:da:maxa),mvv,'k','LineWidth',3)
 set(gca,'FontSize',14,'XTick',xticktimes,'XTickLabel',xticklabels)
-ylim([0.5 100])
+ylim([0.5 1000])
 %xlim([0 48])
-xlabel('Time in days')
+%xlabel('Time in days')
+xlabel('Time in hours')
 

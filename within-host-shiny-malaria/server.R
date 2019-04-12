@@ -32,9 +32,9 @@ shinyServer(function(input, output, session) {
   output$paraPlot <- renderPlot({
     
     parasiteDensity_3D <- reactive(NJWIm_3(initn_R(),48,input$mu,input$sig,input$pmf,k0,a,tpar,delay,2400,input$initconc,0.693,input$halflife,
-                                           killrate_R(),input$ce50,input$h, input$initconc_2,0.693,input$halflife_2,
-                                           killrate_2_R(),input$ce50_2, input$initconc_3,0.693,input$halflife_3,
-                                           killrate_3_R(),input$ce50_3))
+                                           killrate_R(),input$ce50,input$h, input$initconc_2,0.693,input$halflife_2, 
+                                           killrate_2_R(),input$ce50_2, input$h_2, input$initconc_3,0.693,input$halflife_3,
+                                           killrate_3_R(),input$ce50_3, input$h_3))
     
     plot(x=parasiteDensity_3D()[,1],y=parasiteDensity_3D()[,2], xlab="Time (hours)", ylab="Parasite density (log10)",xlim=c(0,1200),ylim=c(0,10), type = 'l')
     text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(log10(sum(parasiteDensity_3D()[,3]))))) #paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_3D()[,2]))))
@@ -51,7 +51,7 @@ shinyServer(function(input, output, session) {
     
     parasiteDensity_2D <- reactive(NJWIm_2(initn_R(),48,input$mu,input$sig,input$pmf,k0,a,tpar,delay,2400,input$initconc,0.693,input$halflife,
                                            killrate_R(),input$ce50,input$h, input$initconc_2,0.693,input$halflife_2,
-                                           killrate_2_R(),input$ce50_2))
+                                           killrate_2_R(),input$ce50_2,input$h_2))
     
     plot(x=parasiteDensity_2D()[,1],y=parasiteDensity_2D()[,2], xlab="Time (hours)", ylab="Parasite density (log10)",xlim=c(0,1200),ylim=c(0,10), type = 'l')
     text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(log10(sum(parasiteDensity_2D()[,3]))))) #paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_2D()[,2]))))
@@ -64,8 +64,8 @@ shinyServer(function(input, output, session) {
   
   output$combinedPlot <- renderPlot({
     drugConc_A <- reactive(drugf(2400,input$initconc,0.693,input$halflife,killrate_R(),input$ce50,input$h))
-    drugConc_B <- reactive(drugf(2400,input$initconc_2,0.693,input$halflife_2,killrate_2_R(),input$ce50_2,input$h))
-    drugConc_C <- reactive(drugf(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h))
+    drugConc_B <- reactive(drugf(2400,input$initconc_2,0.693,input$halflife_2,killrate_2_R(),input$ce50_2,input$h_2))
+    drugConc_C <- reactive(drugf(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h_3))
     
     #par(mar=c(5, 4, 4, 6) + 0.1)
     plot(drugConc_A(),xlab="Time (hours)", ylab="Drug concentration (log10)",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A()[,2]),max(drugConc_B()[,2]),max(drugConc_C()[,2])))), type = 'l', col="blue")
@@ -78,8 +78,8 @@ shinyServer(function(input, output, session) {
   
   output$drugeffPlot <- renderPlot({
     drugEff_A <- reactive(drugeff(2400,input$initconc,0.693,input$halflife,killrate_R(),input$ce50,input$h))
-    drugEff_B <- reactive(drugeff(2400,input$initconc_2,0.693,input$halflife_2,killrate_2_R(),input$ce50_2,input$h))
-    drugEff_C <- reactive(drugeff(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h))
+    drugEff_B <- reactive(drugeff(2400,input$initconc_2,0.693,input$halflife_2,killrate_2_R(),input$ce50_2,input$h_2))
+    drugEff_C <- reactive(drugeff(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h_3))
     #plot(drugEff_A(), xlim=c(0,400),ylim=c(0,max(c(100,max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l', ylab="Drug effect", col="blue")
     plot(drugEff_A(), xlim=c(0,400),ylim=c(0,max(c(max(drugEff_A()[,2]),max(drugEff_B()[,2]),max(drugEff_C()[,2])))), type = 'l', xlab="Time (hours)", ylab="Drug effect", col="blue")
     par(new=TRUE)
@@ -94,7 +94,7 @@ shinyServer(function(input, output, session) {
     
     parasiteDensity_DHApip <- reactive(NJWIm_DHApip(initn_R(),48,input$mu,input$sig,input$pmf,k0,a,tpar,delay,2400,
                                            killrate_R(),input$ce50,input$h, 
-                                           killrate_2_R(),input$ce50_2))
+                                           killrate_2_R(),input$ce50_2, input$h_2))
     
     plot(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,2], xlab="Time (hours)", ylab="Parasite density (log10)",xlim=c(0,1200),ylim=c(0,10), type = 'l')
     text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(log10(sum(parasiteDensity_DHApip()[,3]))))) #paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_DHApip()[,2]))))
@@ -129,7 +129,7 @@ shinyServer(function(input, output, session) {
   
   output$drugeffPlot_DHApip <- renderPlot({
     drugEff_A <- reactive(SpecificDrugEffect(2400,"DHA",killrate_R(),input$ce50,input$h))
-    drugEff_B <- reactive(SpecificDrugEffect(2400,"pip",killrate_2_R(),input$ce50_2,input$h))
+    drugEff_B <- reactive(SpecificDrugEffect(2400,"pip",killrate_2_R(),input$ce50_2,input$h_2))
     #drugEff_C <- reactive(drugeff(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h))
     plot(drugEff_A(), xlim=c(0,400),ylim=c(0,max(c(max(drugEff_A()[,2]),max(drugEff_B()[,2])))), type = 'l', ylab="Drug effect", col="blue")
     #plot(drugEff_A(), xlim=c(0,400),ylim=c(0,max(c(max(drugEff_A()[,2]),max(drugEff_B()[,2]),max(drugEff_C()[,2])))), type = 'l', xlab="Time (hours)", ylab="Drug effect", col="blue")
