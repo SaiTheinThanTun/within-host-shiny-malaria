@@ -1,6 +1,7 @@
 %solver for age and time model%
 % uses analytical solution of pdes for constant source equation at each time step
 clear
+close all
 % global mu tau1 tau2 sigma beta n J BC alpha lam k r phi amp import
 
 % Names of variables
@@ -18,7 +19,8 @@ dosing = 960;
 n=6;
 
 %time steps
-da=0.001;
+%da=0.001;
+da=1;
 maxa=10*24;
 asteps=maxa/da;
 nasteps=asteps;
@@ -158,11 +160,13 @@ for jj = 1: npeople
     % keep solution for compartment 2 for each individual
     vv(jj,:)=v(2,:);
     
-    xticktimes=(24:24*5:maxa);
+    %xticktimes=(24:24*5:maxa);
+    xticktimes=(10:10:maxa);
     xticklabels=(1:100);
     v(2,end)=NaN;
     patch((0:maxa/asteps:maxa),v(2,:),'black','EdgeColor','black','FaceAlpha',0.2);
-    set(gca,'FontSize',14,'XTick',xticktimes,'XTickLabel',1:2:100)
+    %set(gca,'FontSize',14,'XTick',xticktimes,'XTickLabel',1:2:100)
+    set(gca,'FontSize',14,'XTick',xticktimes,'XTickLabel',10:10:1200)
     hold on
 end
 
@@ -172,7 +176,8 @@ mvv=vv(1,:);
 
 figure(2)
 semilogy((0:maxa/asteps:maxa),mvv,'k','LineWidth',3)
-set(gca,'FontSize',14,'XTick',xticktimes,'XTickLabel',1:5:100)
+%set(gca,'FontSize',14,'XTick',xticktimes,'XTickLabel',1:5:100)
+set(gca,'FontSize',14,'XTick',xticktimes,'XTickLabel',10:10:1200)
 ylim([0.1 1000])
 xlabel('Time in days')
 

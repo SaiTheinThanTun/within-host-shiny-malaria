@@ -1,7 +1,6 @@
 %solver for age and time model%
 % uses analytical solution of pdes for constant source equation at each time step
 clear
-clear all
 % global mu tau1 tau2 sigma beta n J BC alpha lam k r phi amp import
 
 % Names of variables
