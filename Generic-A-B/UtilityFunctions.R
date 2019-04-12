@@ -221,7 +221,7 @@ SpecificDrugEffect<-function(runtime,drugname, killrate,ce50,h){
 }
 
 #10. takes 2 drugs: simulate parasite age distribution over time after taking a single dose of artemisinin####
-NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,halflife,killrate,ce50,h, initconc_2,drugloss_2,halflife_2,killrate_2,ce50_2){
+NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,halflife,killrate,ce50,h, initconc_2,drugloss_2,halflife_2,killrate_2,ce50_2, h_2){
   biglst<-matrix(0,nrow=runtime,ncol=lc) #store parasite age distribution
   druglst<-matrix(0,nrow=runtime,ncol=lc) #store drug effect or conc? not used in this function!!
   
@@ -234,7 +234,7 @@ NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,
     drugeffect_1<-drugaction(i,killrate,drugconc_1,ce50,h)
     
     drugconc_2<-drugconcentration(i,initconc_2,drugloss_2,halflife_2)
-    drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2,h)
+    drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2, h_2)
     #lst <-ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2))
     lst<-((lst<1)*0)+((lst>=1)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2)))
     #lst<-((lst<=0)*0)+((lst>0)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2)))
@@ -252,8 +252,8 @@ NJWIm_2<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,
 
 #11. takes 3 drugs: simulate parasite age distribution over time after taking triple doses of respective drugs####
 NJWIm_3<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,halflife,killrate,ce50,h, 
-                  initconc_2,drugloss_2,halflife_2,killrate_2,ce50_2,
-                  initconc_3,drugloss_3,halflife_3,killrate_3,ce50_3){
+                  initconc_2,drugloss_2,halflife_2,killrate_2,ce50_2, h_2,
+                  initconc_3,drugloss_3,halflife_3,killrate_3,ce50_3, h_3){
   biglst<-matrix(0,nrow=runtime,ncol=lc) #store parasite age distribution
   druglst<-matrix(0,nrow=runtime,ncol=lc) #store drug effect or conc? not used in this function!!
   
@@ -266,10 +266,10 @@ NJWIm_3<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,initconc,drugloss,
     drugeffect_1<-drugaction(i,killrate,drugconc_1,ce50,h)
     
     drugconc_2<-drugconcentration(i,initconc_2,drugloss_2,halflife_2)
-    drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2,h)
+    drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2, h_2)
     
     drugconc_3<-drugconcentration(i,initconc_3,drugloss_3,halflife_3)
-    drugeffect_3<-drugaction(i,killrate_3,drugconc_3,ce50_3,h)
+    drugeffect_3<-drugaction(i,killrate_3,drugconc_3,ce50_3, h_3)
     #lst <-ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2))
     lst<-((lst<1)*0)+((lst>=1)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2+drugeffect_3)))
     #lst<-((lst<=0)*0)+((lst>0)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2)))
@@ -310,7 +310,7 @@ TrueMIC <- function(MICvector){
 
 #13. NJWIm_DHApip() ####
 #copied from 10. takes 2 drugs: simulate parasite age distribution over time after taking a single dose of artemisinin
-NJWIm_DHApip<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce50,h, killrate_2,ce50_2){
+NJWIm_DHApip<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce50,h, killrate_2,ce50_2, h_2){
   biglst<-matrix(0,nrow=runtime,ncol=lc) #store parasite age distribution
   druglst<-matrix(0,nrow=runtime,ncol=lc) #store drug effect or conc? not used in this function!!
   
@@ -323,7 +323,7 @@ NJWIm_DHApip<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce50
     drugeffect_1<-drugaction(i,killrate,drugconc_1,ce50,h)
     
     drugconc_2<-SpecificDrugConc(i,drugname="pip")
-    drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2,h)
+    drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2, h_2)
     lst<-((lst<1)*0)+((lst>=1)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2)))
 
     biglst[i,]<-lst
@@ -337,8 +337,8 @@ NJWIm_DHApip<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce50
 
 #14. NJWIm_DHApip_C() ####
 #copied from 13
-NJWIm_DHApip_C<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce50,h, killrate_2,ce50_2,
-                         initconc_3,drugloss_3,halflife_3,killrate_3,ce50_3){
+NJWIm_DHApip_C<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce50,h, killrate_2,ce50_2, h_2,
+                         initconc_3,drugloss_3,halflife_3,killrate_3,ce50_3, h_3){
   biglst<-matrix(0,nrow=runtime,ncol=lc) #store parasite age distribution
   druglst<-matrix(0,nrow=runtime,ncol=lc) #store drug effect or conc? not used in this function!!
   
@@ -351,10 +351,10 @@ NJWIm_DHApip_C<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce
     drugeffect_1<-drugaction(i,killrate,drugconc_1,ce50,h)
     
     drugconc_2<-SpecificDrugConc(i,drugname="pip")
-    drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2,h)
+    drugeffect_2<-drugaction(i,killrate_2,drugconc_2,ce50_2, h_2)
     
     drugconc_3<-drugconcentration(i,initconc_3,drugloss_3,halflife_3)
-    drugeffect_3<-drugaction(i,killrate_3,drugconc_3,ce50_3,h)
+    drugeffect_3<-drugaction(i,killrate_3,drugconc_3,ce50_3, h_3)
     
     lst<-((lst<1)*0)+((lst>=1)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2+drugeffect_3)))
     
