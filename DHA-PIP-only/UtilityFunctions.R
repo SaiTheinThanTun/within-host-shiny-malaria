@@ -313,9 +313,12 @@ TrueMIC <- function(MICvector){
 NJWIm_DHApip<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce50,h, killrate_2,ce50_2, h_2){
   biglst<-matrix(0,nrow=runtime,ncol=lc) #store parasite age distribution
   druglst<-matrix(0,nrow=runtime,ncol=lc) #store drug effect or conc? not used in this function!!
+  #gametocytes<-matrix(0,nrow=runtime,ncol=lc) #store gametocytes counts
+  gametocytes <- NA
   
   lst <- InitAgeDistribution(initn,lc,mu,sig)
   biglst[1,]<-lst
+  gametocytes[1] <- sum(lst)*0.001*12 #kgam*pmf
   i=2
   while(i <= runtime)
   {
@@ -327,10 +330,17 @@ NJWIm_DHApip<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce50
     lst<-((lst<1)*0)+((lst>=1)*ShiftOneHour(lst,pmf)*exp(-(drugeffect_1+drugeffect_2)))
 
     biglst[i,]<-lst
+    if((i%%2)==0){
+      gametocytes[i] <- gametocytes[i-1]+(sum(lst)*0.001*12) #kgam*pmf
+      gametocytes[i] <- gametocytes[i]*exp(-1/9) #exp(-kg)
+    } else{
+      gametocytes[i] <- gametocytes[i-1]*exp(-1/9) #exp(-kg)
+    }
+    
     i<-i+1   
   }
   
-  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), normal=apply(biglst,1,countrings))
+  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), normal=apply(biglst,1,countrings), gam=log10(gametocytes)) #apply(gametocytes,1,sum)))
   #output the log of total observable parasites
 }
 
@@ -364,4 +374,14 @@ NJWIm_DHApip_C<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce
   
   data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), normal=apply(biglst,1,countrings))
   #output the log of total observable parasites
+}
+
+###15. Gametocytes####
+#in: parasite count (not log10 version) for all timesteps
+#parameters for gametocytes
+
+#out: 
+
+Gametocytes <- function(){
+  
 }

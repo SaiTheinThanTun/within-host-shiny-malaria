@@ -98,8 +98,13 @@ shinyServer(function(input, output, session) {
                                            killrate_R(),ce50_R(),input$h, 
                                            killrate_2_R(),ce50_2_R(), input$h_2))
     
-    plot(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,2], xlab="Time (hours)", ylab="Parasite density (log10)",xlim=c(0,1200),ylim=c(0,10), type = 'l')
-    text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(log10(sum(parasiteDensity_DHApip()[,3]))))) #paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_DHApip()[,2]))))
+    plot(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,2], xlab="Time (hours)", ylab="Parasite density (log10)",xlim=c(0,1200),ylim=c(0,max(c(8,parasiteDensity_DHApip()[,2]))), type = 'l')
+    lines(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,4], lty="dotdash")
+    auxillaryParasiteDensity <- parasiteDensity_DHApip()[,3]
+    auxillaryParasiteDensity[auxillaryParasiteDensity==0] <- 1
+    text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(sum(log10(auxillaryParasiteDensity)),3)))
+    legend(650, 4.5, legend = c("Total countable parasites", "Gametocytes"), lty = c(1,4))
+    #text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(log10(sum(parasiteDensity_DHApip()[,3])),3))) #paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_DHApip()[,2]))))
     
     #TODO
     # abline(v=TrueMIC(whereIsMIC_D1_R()), col="blue")
