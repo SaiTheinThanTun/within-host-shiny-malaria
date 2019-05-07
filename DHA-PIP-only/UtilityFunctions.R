@@ -376,12 +376,3 @@ NJWIm_DHApip_C<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce
   #output the log of total observable parasites
 }
 
-###15. Gametocytes####
-#in: parasite count (not log10 version) for all timesteps
-#parameters for gametocytes
-
-#out: 
-
-Gametocytes <- function(){
-  
-}
