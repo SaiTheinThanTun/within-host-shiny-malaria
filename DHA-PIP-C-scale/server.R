@@ -11,6 +11,7 @@ shinyServer(function(input, output, session) {
   killrate_R <- reactive(input$killrate*input$sen) #killrate adjusted by sensitivity
   killrate_2_R <- reactive(input$killrate_2*input$sen_2)
   killrate_3_R <- reactive(input$killrate_3*input$sen_3)
+  ThirdDrugConc_R <- reactive(ThirdDrug(input$initconc_3, input$scaling))
   
   #TODO
   #MIC for 3rd drug hasn't be done as changes will still come to MIC #TODO

@@ -21,7 +21,7 @@ shinyUI(fluidPage(
       sliderInput("killrate", "Kill rate: ", min = 0, max = .4, value = .2, step = .01),
       sliderInput("sen", "Sensitivity: ", min = .00, max = 1.00, value = 1, step = .01),
       #sliderInput("ce50", "CE50: ", min = 10, max = 100, value = 15, step = 5),
-      sliderInput("ce50", "Log10 of CE50: ", min = .2, max = 1.5, value = .4, step = .1),
+      sliderInput("ce50", "Log10 of CE50: ", min = .5, max = 3, value = .4, step = .1),
       sliderInput("h", "h: ", min = 1, max = 10, value =4, step =1)
       ),
       column(3,  strong("Piperaquine pharmacodynamics"),
@@ -31,7 +31,7 @@ shinyUI(fluidPage(
       sliderInput("killrate_2", "Kill rate: ", min = 0, max = .4, value = .1, step = .01),
       sliderInput("sen_2", "Sensitivity: ", min = .00, max = 1.00, value = 1, step = .01),
       #sliderInput("ce50_2", "CE50: ", min = 10, max = 100, value = 30, step = 5),
-      sliderInput("ce50_2", "Log10 of CE50: ", min = .2, max = 1.5, value = .6, step = .1),
+      sliderInput("ce50_2", "Log10 of CE50: ", min = .5, max = 3, value = .6, step = .1),
       sliderInput("h_2", "h: ", min = 1, max = 10, value =4, step =1)
       ),
       column(3, strong("Drug C"),
