@@ -58,6 +58,9 @@ shinyUI(fluidPage(
     column(4,plotOutput("paraPlot_DHApip")),
     column(4,plotOutput("DHA_PIP_Plot")),
     column(4,plotOutput("drugeffPlot_DHApip"))
+  ),
+  fluidRow(
+    column(4,plotOutput(("killRate48")))
   )
   )
 )

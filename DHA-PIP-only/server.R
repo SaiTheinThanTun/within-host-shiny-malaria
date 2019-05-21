@@ -1,4 +1,5 @@
 library(shiny)
+library(ggplot2)
 
 #utility functions go here
 source("UtilityFunctions.R", local = TRUE)
@@ -97,6 +98,9 @@ shinyServer(function(input, output, session) {
     parasiteDensity_DHApip <- reactive(NJWIm_DHApip(initn_R(),48,input$mu,input$sig,input$pmf,k0,a,tpar,delay,2400,
                                            killrate_R(),ce50_R(),input$h, 
                                            killrate_2_R(),ce50_2_R(), input$h_2))
+    #output
+    #1. time, 2. log10, 3. normal, 4. gam, 5. infect
+    mycol <- rgb(0, 0, 255, max = 255, alpha = 100, names = "blue50")
     
     plot(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,2], xlab="Time (hours)", ylab="Parasite density (log10)",xlim=c(0,1200),ylim=c(0,max(c(8,parasiteDensity_DHApip()[,2]))), type = 'l')
     lines(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,4], lty="dotdash")
@@ -104,6 +108,13 @@ shinyServer(function(input, output, session) {
     auxillaryParasiteDensity[auxillaryParasiteDensity==0] <- 1
     text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(sum(log10(auxillaryParasiteDensity)),3)))
     legend(650, 4.5, legend = c("Total countable parasites", "Gametocytes"), lty = c(1,4))
+    par(new=TRUE)
+    plot(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,5], type='l',col='blue', axes=FALSE, xlab="", ylab = "", ylim=c(0,1.2))
+    #barplot(parasiteDensity_DHApip()[,5], axes=FALSE, col="red", border="red")
+    polygon(x=parasiteDensity_DHApip()[,1],y=c(parasiteDensity_DHApip()[,5][-nrow(parasiteDensity_DHApip())],0), col=mycol)
+    axis(4, at=c(0,1), col="blue",col.axis="blue",las=1)
+    mtext("Probability of infectiousness",side=4,col="blue")
+    
     #text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(log10(sum(parasiteDensity_DHApip()[,3])),3))) #paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_DHApip()[,2]))))
     
     #TODO
@@ -149,5 +160,21 @@ shinyServer(function(input, output, session) {
     # legend(150, .05, legend = c("DHA", "Piperaquine", "Drug C"), col = c("blue", "red", "black"), lty = 1)
   })
   
+  output$killRate48 <- renderPlot({
+    paraDen <- reactive(NJWIm_DHApip(initn_R(),48,input$mu,input$sig,input$pmf,k0,a,tpar,delay,2400,
+                                                    killrate_R(),ce50_R(),input$h,
+                                                    killrate_2_R(),ce50_2_R(), input$h_2))
+    #output
+    #1. time, 2. log10, 3. normal, 4. gam, 5. infect
+    every48 <- seq(from=1,to=2400, by=48)
+    paraDen48 <- reactive(paraDen()[every48,3])
+    killRate48 <- NA
+    for(i in 1:(length(paraDen48())-1)){
+      killRate48[i] <- paraDen48()[i]*8-paraDen48()[i+1]
+    }
 
+    killRate48[which(killRate48==0)] <- 1 #to prevent infinity values from log10
+
+    barplot(log10(killRate48)[1:25], main = "Kill rate \n10*(# parasites at a timepoint)-(# parasites after 48 hours)", xlab="Time @48 hours interval", ylab = "Log10(parasite difference between 48 hr)", ylim=c(0,max(log10(killRate48))))
+  })
 })
