@@ -15,17 +15,17 @@ shinyUI(fluidPage(
       sliderInput("pmf", "Parasite Multiplication factor: ", min = 8, max=10, value=8)
     ),
       
-    column(4,
+    column(3,
            strong("DHA pharmacodynamics"),
        # sliderInput("initconc", "Initial drug A concentration: ", min = 25, max=150, value = 72, step = 5 ),
        # sliderInput("halflife", "Drug A halflife: ", min = 5, max=240, value=16, step = 1), #value=54, step = 1),
       sliderInput("killrate", "Kill rate: ", min = 0, max = .4, value = .2, step = .01),
       sliderInput("sen", "Sensitivity: ", min = .00, max = 1.00, value = 1, step = .01),
       #sliderInput("ce50", "CE50: ", min = 10, max = 100, value = 15, step = 5),
-      sliderInput("ce50", "Log10 of CE50: ", min = .5, max = 3, value = .4, step = .1),
+      sliderInput("ce50", "Log10 of CE50: ", min = .4, max = 3, value = .4, step = .1),
       sliderInput("h", "h: ", min = 1, max = 10, value =4, step =1)
       ),
-      column(4, strong("Piperaquine pharmacodynamics"),
+      column(3, strong("Piperaquine pharmacodynamics"),
       #drug2
       # sliderInput("initconc_2", "Initial drug B concentration: ", min = 25, max=150, value = 50, step = 5 ),
       # sliderInput("halflife_2", "Drug B halflife: ", min = 5, max=400, value=324, step = 1),
@@ -35,15 +35,17 @@ shinyUI(fluidPage(
       sliderInput("ce50_2", "Log10 of CE50: ", min = .5, max = 3, value = .6, step = .1),
       sliderInput("h_2", "h: ", min = 1, max = 10, value =4, step =1)
       )
-    # ,
-    #   column(3,
-    #   #drug3
+    ,
+      column(3, strong("Drug C (proportional to piperaquine's PK)"),
+      #drug3
     #   sliderInput("initconc_3", "Initial drug C concentration: ", min = 25, max=150, value = 60, step = 5 ),
     #   sliderInput("halflife_3", "Drug C halflife: ", min = 5, max=400, value=24, step = 1),
-    #   sliderInput("killrate_3", "Kill rate, drug C: ", min = 0, max = .4, value = .15, step = .01),
-    #   sliderInput("sen_3", "Sensitivity, drug C: ", min = .00, max = 1.00, value = .8, step = .01),
-    #   sliderInput("ce50_3", "CE50, drug C: ", min = 10, max = 100, value = 25, step = 5)
-    #   )
+      sliderInput("killrate_3", "Kill rate: ", min = 0, max = .4, value = .1, step = .01),
+      sliderInput("sen_3", "Sensitivity: ", min = .00, max = 1.00, value = .75, step = .01),
+      sliderInput("ce50_3", "CE50: ", min = .5, max = 3, value = .6, step = .1),
+    sliderInput("h_3", "h: ", min = 1, max = 10, value =4, step =1),
+    sliderInput("C_scale","%PK compared to Piperaquine: ", min=.25,max=1.75, value=.5,step=.25)
+      )
      ),
   fluidRow(p("Sensitivity to drug, toggle:"),
            actionButton("aSen", "DHA:100%, pip:50%"),

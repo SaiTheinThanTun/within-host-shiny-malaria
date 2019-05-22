@@ -55,6 +55,7 @@ drugconcentration<-function(t,initconc,drugloss,halflife){
 DHAconcentration <- readRDS("data/DHAconc.RDS")
 PIPconcentration <- readRDS("data/PIPconc.RDS")
 CconList <- lapply(1:7, function(x) readRDS(paste0("data/",x,".RDS")))
+K20Values <- c(.25, .5, .75, 1, 1.25, 1.5, 1.75)
 SpecificDrugConc <- function(t, drugname){
   if(drugname=="DHA"){
     out <- DHAconcentration[t,2]
@@ -62,9 +63,10 @@ SpecificDrugConc <- function(t, drugname){
   if(drugname=="pip"){
     out <- PIPconcentration[t,2]
   }
-  K20Values <- c(.25, .5, .75, 1, 1.25, 1.5, 1.75)
-  if(drugname %in% K20Values){
+  
+  if(drugname %in% K20Values){ # | drugname %in% as.character(K20Values)){
     out <- CconList[[which(K20Values==drugname)]][t,2] #readRDS(paste0("data/",which(K20Values==drugname),".RDS"))[t,2]
+    #out <- PIPconcentration[t,2]
   }
   out
 }

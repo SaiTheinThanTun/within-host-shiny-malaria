@@ -22,7 +22,7 @@ shinyUI(fluidPage(
       sliderInput("killrate", "Kill rate: ", min = 0, max = .4, value = .2, step = .01),
       sliderInput("sen", "Sensitivity: ", min = .00, max = 1.00, value = 1, step = .01),
       #sliderInput("ce50", "CE50: ", min = 10, max = 100, value = 15, step = 5),
-      sliderInput("ce50", "Log10 of CE50: ", min = .5, max = 3, value = .4, step = .1),
+      sliderInput("ce50", "Log10 of CE50: ", min = .4, max = 3, value = .4, step = .1),
       sliderInput("h", "h: ", min = 1, max = 10, value =4, step =1)
       ),
       column(4, strong("Piperaquine pharmacodynamics"),

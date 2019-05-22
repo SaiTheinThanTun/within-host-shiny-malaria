@@ -430,7 +430,7 @@ PIPconc <- function(){
 }
 
 #Drug C concentration####
-Cconc <- function(K20){
+Cconc <- function(K20_adjust){
   #for piperaquine
   #%solver for age and time model%
   #% uses analytical solution of pdes for constant source equation at each time step
@@ -568,7 +568,7 @@ Cconc <- function(K20){
   K32 = Q1/V3
   K24 = Q2/V2
   K42 = Q2/V4
-  #K20 = CL/V2
+  K20 = (CL/V2)
   
   S2 = V2*1000
   VD = V2+V3+V4
@@ -623,16 +623,16 @@ Cconc <- function(K20){
   # % keep solution for compartment 2 for each individual
   # vv(jj,:)=v(2,:);
   #vv[jj,]=v[2,]#matrix output
-  vv2 <- v[2,]
+  vv2 <- v[2,]*K20_adjust
+  vv3 <- log10(vv2)
+  vv3[is.infinite(vv3)] <- 0
   # vv2
-  data.frame(time=seq(0,maxa),normal=(vv2))
-  
-  
+  data.frame(time=seq(0,maxa),normal=(vv2), log10=vv3)
 }
 
 #Concentration calculation####
 DHAconcentration <- DHAconc()
-PIPconcentration <- PIPconc
+PIPconcentration <- PIPconc()
 K20Values <- c(.25, .5, .75, 1, 1.25, 1.5, 1.75)
 for(i in 1:length(K20Values)){
   Cconcentration <- Cconc(K20Values[i])
