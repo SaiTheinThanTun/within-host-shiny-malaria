@@ -167,14 +167,14 @@ shinyServer(function(input, output, session) {
     #output
     #1. time, 2. log10, 3. normal, 4. gam, 5. infect
     every48 <- seq(from=1,to=2400, by=48)
-    paraDen48 <- reactive(paraDen()[every48,3])
+    paraDen48 <- reactive(paraDen()[every48,2])
     killRate48 <- NA
     for(i in 1:(length(paraDen48())-1)){
-      killRate48[i] <- paraDen48()[i]*8-paraDen48()[i+1]
+      killRate48[i] <- paraDen48()[i]*log10(input$pmf)-paraDen48()[i+1]
     }
+    killRate48[which(is.infinite(killRate48))] <- 0
+    #killRate48[which(killRate48==0)] <- 1 #to prevent infinity values from log10
 
-    killRate48[which(killRate48==0)] <- 1 #to prevent infinity values from log10
-
-    barplot(log10(killRate48)[1:25], main = "Kill rate \n10*(# parasites at a timepoint)-(# parasites after 48 hours)", xlab="Time @48 hours interval", ylab = "Log10(parasite difference between 48 hr)", ylim=c(0,max(log10(killRate48))))
+    barplot((killRate48)[1:25], main = "Kill rate \npmf*(# parasites at a timepoint)-(# parasites after 48 hours)", xlab="Time @48 hours interval", ylab = "(parasite difference between 48 hr)") #, ylim=c(0,max((killRate48))
   })
 })

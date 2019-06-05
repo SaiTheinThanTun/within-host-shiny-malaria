@@ -134,7 +134,7 @@ shinyServer(function(input, output, session) {
     drugConc_B[,2] <- log10(drugConc_B[,2])
     drugConc_B[,2][is.infinite(drugConc_B[,2])] <- 0
     
-    drugConc_C <- reactive(CconList[[which(K20Values==input$C_scale)]])
+    drugConc_C <- reactive(CconList[[which(Theta_1_CL_F_values==input$C_scale)]])
     #drugConc_C <- reactive(drugf(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h))
     
     #par(mar=c(5, 4, 4, 6) + 0.1)
@@ -167,19 +167,19 @@ shinyServer(function(input, output, session) {
   
   output$killRate48 <- renderPlot({
     paraDen <- reactive(NJWIm_DHApip(initn_R(),48,input$mu,input$sig,input$pmf,k0,a,tpar,delay,2400,
-                                                    killrate_R(),ce50_R(),input$h,
-                                                    killrate_2_R(),ce50_2_R(), input$h_2))
+                                     killrate_R(),ce50_R(),input$h,
+                                     killrate_2_R(),ce50_2_R(), input$h_2))
     #output
     #1. time, 2. log10, 3. normal, 4. gam, 5. infect
     every48 <- seq(from=1,to=2400, by=48)
-    paraDen48 <- reactive(paraDen()[every48,3])
+    paraDen48 <- reactive(paraDen()[every48,2])
     killRate48 <- NA
     for(i in 1:(length(paraDen48())-1)){
-      killRate48[i] <- paraDen48()[i]*8-paraDen48()[i+1]
+      killRate48[i] <- paraDen48()[i]*log10(input$pmf)-paraDen48()[i+1]
     }
-
-    killRate48[which(killRate48==0)] <- 1 #to prevent infinity values from log10
-
-    barplot(log10(killRate48)[1:25], main = "Kill rate \n10*(# parasites at a timepoint)-(# parasites after 48 hours)", xlab="Time @48 hours interval", ylab = "Log10(parasite difference between 48 hr)", ylim=c(0,max(log10(killRate48))))
+    killRate48[which(is.infinite(killRate48))] <- 0
+    #killRate48[which(killRate48==0)] <- 1 #to prevent infinity values from log10
+    
+    barplot((killRate48)[1:25], main = "Kill rate \npmf*(# parasites at a timepoint)-(# parasites after 48 hours)", xlab="Time @48 hours interval", ylab = "(parasite difference between 48 hr)") #, ylim=c(0,max((killRate48))
   })
 })

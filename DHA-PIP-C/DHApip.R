@@ -262,7 +262,7 @@ PIPconc <- function(){
   # % 10.F dos occ
   # % 11.ET50
   # % 12.Hill
-  Theta_1_CL_F = 55.4
+  Theta_1_CL_F = 55.4 #change to 100, 150, 200, 250, 300
   Theta_2_V2_F = 2910
   Theta_3_Q1_F = 310
   Theta_4_V3_F = 4910
@@ -430,7 +430,7 @@ PIPconc <- function(){
 }
 
 #Drug C concentration####
-Cconc <- function(K20_adjust){
+Cconc <- function(Theta_1_CL_F_values){
   #for piperaquine
   #%solver for age and time model%
   #% uses analytical solution of pdes for constant source equation at each time step
@@ -485,7 +485,7 @@ Cconc <- function(K20_adjust){
   # % 10.F dos occ
   # % 11.ET50
   # % 12.Hill
-  Theta_1_CL_F = 55.4
+  Theta_1_CL_F = Theta_1_CL_F_values #55.4 #change to 100, 150, 200, 250, 300
   Theta_2_V2_F = 2910
   Theta_3_Q1_F = 310
   Theta_4_V3_F = 4910
@@ -623,7 +623,7 @@ Cconc <- function(K20_adjust){
   # % keep solution for compartment 2 for each individual
   # vv(jj,:)=v(2,:);
   #vv[jj,]=v[2,]#matrix output
-  vv2 <- v[2,]*K20_adjust
+  vv2 <- v[2,]
   vv3 <- log10(vv2)
   vv3[is.infinite(vv3)] <- 0
   # vv2
@@ -633,9 +633,10 @@ Cconc <- function(K20_adjust){
 #Concentration calculation####
 DHAconcentration <- DHAconc()
 PIPconcentration <- PIPconc()
-K20Values <- c(.25, .5, .75, 1, 1.25, 1.5, 1.75)
-for(i in 1:length(K20Values)){
-  Cconcentration <- Cconc(K20Values[i])
+#K20Values <- c(.25, .5, .75, 1, 1.25, 1.5, 1.75)
+Theta_1_CL_F_values <- c(55.4, 100, 150, 200, 250, 300)
+for(i in 1:length(Theta_1_CL_F_values)){
+  Cconcentration <- Cconc(Theta_1_CL_F_values[i])
   saveRDS(Cconcentration, paste0(i,".RDS"))
 }
 
