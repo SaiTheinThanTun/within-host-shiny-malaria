@@ -126,11 +126,11 @@ shinyServer(function(input, output, session) {
   output$DHA_PIP_Plot <- renderPlot({
     drugConc_A <- DHAconcentration #reactive(drugf(2400,input$initconc,0.693,input$halflife,killrate_R(),ce50_R(),input$h))
     drugConc_A[,2] <- log10(drugConc_A[,2]) 
-    drugConc_A[,2][is.infinite(drugConc_A[,2])] <- 0
+    drugConc_A[,2][is.infinite(drugConc_A[,2])] <- 1
     
     drugConc_B <- PIPconcentration #reactive(drugf(2400,input$initconc_2,0.693,input$halflife_2,killrate_2_R(),ce50_2_R(),input$h))
     drugConc_B[,2] <- log10(drugConc_B[,2])
-    drugConc_B[,2][is.infinite(drugConc_B[,2])] <- 0
+    drugConc_B[,2][is.infinite(drugConc_B[,2])] <- 1
     #drugConc_C <- reactive(drugf(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h))
     
     #par(mar=c(5, 4, 4, 6) + 0.1)
