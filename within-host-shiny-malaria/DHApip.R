@@ -625,7 +625,7 @@ Cconc <- function(Theta_1_CL_F_values){
   #vv[jj,]=v[2,]#matrix output
   vv2 <- v[2,]
   vv3 <- log10(vv2)
-  vv3[is.infinite(vv3)] <- 1
+  vv3[is.infinite(vv3)] <- 0
   # vv2
   data.frame(time=seq(0,maxa),normal=(vv2), log10=vv3)
 }
