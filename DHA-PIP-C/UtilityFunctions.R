@@ -364,7 +364,7 @@ NJWIm_DHApip<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killrate,ce50
     i<-i+1   
   }
   
-  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), normal=apply(biglst,1,countrings), gam=log10(gametocytes), infect=infectivity) #apply(gametocytes,1,sum)))
+  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), normal=apply(biglst,1,countrings), gam=gametocytes, infect=infectivity) #apply(gametocytes,1,sum)))
   #output the log of total observable parasites
 }
 
@@ -451,6 +451,6 @@ NJWIm_DHApip_C_scale<-function(initn,lc,mu,sig,pmf,k0,a,tpar,delay,runtime,killr
     i<-i+1   
   }
   
-  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), normal=apply(biglst,1,countrings), gam=log10(gametocytes), infect=infectivity) #apply(gametocytes,1,sum)))
+  data.frame(time=seq(1,runtime),log10=log10(apply(biglst,1,countrings)), normal=apply(biglst,1,countrings), gam=gametocytes, infect=infectivity) #apply(gametocytes,1,sum)))
   #output the log of total observable parasites
 }

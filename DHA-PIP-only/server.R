@@ -1,5 +1,6 @@
 library(shiny)
 library(ggplot2)
+library(sfsmisc) #eaxis
 
 #utility functions go here
 source("UtilityFunctions.R", local = TRUE)
@@ -102,19 +103,20 @@ shinyServer(function(input, output, session) {
     #1. time, 2. log10, 3. normal, 4. gam, 5. infect
     mycol <- rgb(0, 0, 255, max = 255, alpha = 100, names = "blue50")
     
-    plot(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,2], xlab="Time (hours)", ylab="Parasite density (log10)",xlim=c(0,1200),ylim=c(0,max(c(8,parasiteDensity_DHApip()[,2]))), type = 'l')
-    lines(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,4], lty="dotdash")
+    plot(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,3], xlab="Time (hours)", ylab="Parasite density",xlim=c(0,1200),log="y", type = 'l', axes=FALSE)
+    lines(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,4], lty="dotdash", log="y")
+    eaxis(2)
     auxillaryParasiteDensity <- parasiteDensity_DHApip()[,3]
     auxillaryParasiteDensity[auxillaryParasiteDensity==0] <- 1
-    text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(sum(log10(auxillaryParasiteDensity)),3)))
-    legend(650, 4.5, legend = c("Total countable parasites", "Gametocytes"), lty = c(1,4))
+    text(x = 520, y=10^7, paste("Log-Sum of observable parasites: ", round(sum(log10(auxillaryParasiteDensity)),3)))
+    legend(650, 10^4.5, legend = c("Total countable parasites", "Gametocytes"), lty = c(1,4))
     par(new=TRUE)
     plot(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,5], type='l',col='blue', axes=FALSE, xlab="", ylab = "", ylim=c(0,1.2))
     #barplot(parasiteDensity_DHApip()[,5], axes=FALSE, col="red", border="red")
     polygon(x=parasiteDensity_DHApip()[,1],y=c(parasiteDensity_DHApip()[,5][-nrow(parasiteDensity_DHApip())],0), col=mycol)
     axis(4, at=c(0,1), col="blue",col.axis="blue",las=1)
     mtext("Probability of infectiousness",side=4,col="blue")
-    
+    eaxis(1)
     #text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(log10(sum(parasiteDensity_DHApip()[,3])),3))) #paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_DHApip()[,2]))))
     
     #TODO
@@ -125,24 +127,26 @@ shinyServer(function(input, output, session) {
   
   output$DHA_PIP_Plot <- renderPlot({
     drugConc_A <- DHAconcentration #reactive(drugf(2400,input$initconc,0.693,input$halflife,killrate_R(),ce50_R(),input$h))
-    drugConc_A[,2] <- log10(drugConc_A[,2]) 
-    drugConc_A[,2][is.infinite(drugConc_A[,2])] <- 0
+    # drugConc_A[,2] <- log10(drugConc_A[,2]) 
+    # drugConc_A[,2][is.infinite(drugConc_A[,2])] <- 0
     
     drugConc_B <- PIPconcentration #reactive(drugf(2400,input$initconc_2,0.693,input$halflife_2,killrate_2_R(),ce50_2_R(),input$h))
-    drugConc_B[,2] <- log10(drugConc_B[,2])
-    drugConc_B[,2][is.infinite(drugConc_B[,2])] <- 0
+    # drugConc_B[,2] <- log10(drugConc_B[,2])
+    # drugConc_B[,2][is.infinite(drugConc_B[,2])] <- 0
     #drugConc_C <- reactive(drugf(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h))
     
     #par(mar=c(5, 4, 4, 6) + 0.1)
     #plot(drugConc_A,xlab="Time (hours)", ylab="Drug concentration (log10)",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2]),max(drugConc_C()[,2])))), type = 'l', col="blue")
-    plot(drugConc_A,xlab="Time (hours)", ylab="Drug concentration (log10)",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2])))), type = 'l', col="blue")
+    plot(drugConc_A,axes=FALSE,xlab="Time (hours)", ylab="Drug concentration",xlim=c(0,400),log="y",ylim=c(10^0, 10^3.5),type = 'l', col="blue")
     par(new=TRUE)
     #plot(drugConc_B, axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2]),max(drugConc_C()[,2])))), type = 'l', col="red")
-    plot(drugConc_B, axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2])))), type = 'l', col="red")
-    par(new=TRUE)
+    plot(drugConc_B, axes=FALSE,xlab="", ylab="",xlim=c(0,400),log="y",ylim=c(10^0, 10^3.5), type = 'l', col="red")
+    #par(new=TRUE)
+    eaxis(2, n.axp = 1)
+    eaxis(1)
     #plot(drugConc_C(), axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2]),max(drugConc_C()[,2])))), type = 'l', col="black")
     #legend(150, 1, legend = c("DHA", "Piperaquine", "Drug C"), col = c("blue", "red", "black"), lty = 1)
-    legend(150, 1, legend = c("DHA", "Piperaquine"), col = c("blue", "red"), lty = 1)
+    legend(150, 10, legend = c("DHA", "Piperaquine"), col = c("blue", "red"), lty = 1)
   })
   
   output$drugeffPlot_DHApip <- renderPlot({

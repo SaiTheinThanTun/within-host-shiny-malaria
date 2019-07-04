@@ -1,4 +1,5 @@
 library(shiny)
+library(sfsmisc)
 
 #utility functions go here
 source("UtilityFunctions.R", local = TRUE)
@@ -100,8 +101,8 @@ shinyServer(function(input, output, session) {
                                            input$initconc_3,0.693,input$halflife_3,
                                            killrate_3_R(),input$ce50_3,input$h_3))
     
-    plot(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,2], xlab="Time (hours)", ylab="Parasite density (log10)",xlim=c(0,1200),ylim=c(0,10), type = 'l')
-    text(x = 520, y=7, paste("Log-Sum of observable parasites: ", round(log10(sum(parasiteDensity_DHApip()[,3]))))) #paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_DHApip()[,2]))))
+    plot(x=parasiteDensity_DHApip()[,1],y=parasiteDensity_DHApip()[,3], xlab="Time (hours)", ylab="Parasite density",xlim=c(0,1200),log="y", type = 'l')
+    text(x = 520, y=10^7, paste("Log-Sum of observable parasites: ", round(log10(sum(parasiteDensity_DHApip()[,3]))))) #paste("Log-Sum of observable parasites: ", sum(round(parasiteDensity_DHApip()[,2]))))
     
     #TODO
     # abline(v=TrueMIC(whereIsMIC_D1_R()), col="blue")
@@ -111,24 +112,27 @@ shinyServer(function(input, output, session) {
   
   output$DHA_PIP_Plot <- renderPlot({
     drugConc_A <- DHAconcentration #reactive(drugf(2400,input$initconc,0.693,input$halflife,killrate_R(),ce50_R(),input$h))
-    drugConc_A[,2] <- log10(drugConc_A[,2]) 
-    drugConc_A[,2][is.infinite(drugConc_A[,2])] <- 0
+    # drugConc_A[,2] <- log10(drugConc_A[,2]) 
+    # drugConc_A[,2][is.infinite(drugConc_A[,2])] <- 0
     
     drugConc_B <- PIPconcentration #reactive(drugf(2400,input$initconc_2,0.693,input$halflife_2,killrate_2_R(),ce50_2_R(),input$h))
-    drugConc_B[,2] <- log10(drugConc_B[,2])
-    drugConc_B[,2][is.infinite(drugConc_B[,2])] <- 0
-    drugConc_C <- reactive(drugf(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h_3))
+    # drugConc_B[,2] <- log10(drugConc_B[,2])
+    # drugConc_B[,2][is.infinite(drugConc_B[,2])] <- 0
+    drugConc_C <- reactive(10^drugf(2400,input$initconc_3,0.693,input$halflife_3,killrate_3_R(),input$ce50_3,input$h_3))
     
     #par(mar=c(5, 4, 4, 6) + 0.1)
-    plot(drugConc_A,xlab="Time (hours)", ylab="Drug concentration (log10)",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2]),max(drugConc_C()[,2])))), type = 'l', col="blue")
+    plot(drugConc_A,axes=FALSE,xlab="Time (hours)", ylab="Drug concentration",xlim=c(0,400),log="y",ylim=c(10^0, 10^3.5), type = 'l', col="blue")
     #plot(drugConc_A,xlab="Time (hours)", ylab="Drug concentration (log10)",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2])))), type = 'l', col="blue")
     par(new=TRUE)
-    plot(drugConc_B, axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2]),max(drugConc_C()[,2])))), type = 'l', col="red")
+    plot(drugConc_B, axes=FALSE,xlab="", ylab="",xlim=c(0,400),log="y", ylim=c(10^0, 10^3.5), type = 'l', col="red")
     #plot(drugConc_B, axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2])))), type = 'l', col="red")
     par(new=TRUE)
-    plot(drugConc_C(), axes=FALSE,xlab="", ylab="",xlim=c(0,400),ylim=c(0,max(c(max(drugConc_A[,2]),max(drugConc_B[,2]),max(drugConc_C()[,2])))), type = 'l', col="black")
-    legend(150, 1, legend = c("DHA", "Piperaquine", "Drug C"), col = c("blue", "red", "black"), lty = 1)
+    plot(1:length(drugConc_C()[,2]),drugConc_C()[,2], axes=FALSE,xlab="", ylab="",xlim=c(0,400),log="y", ylim=c(10^0, 10^3.5),type = 'l', col="black")
+    legend(150, 10, legend = c("DHA", "Piperaquine", "Drug C"), col = c("blue", "red", "black"), lty = 1)
+    eaxis(2, n.axp=1)
+    eaxis(1)
     #legend(150, 1, legend = c("DHA", "Piperaquine"), col = c("blue", "red"), lty = 1)
+    box()
   })
   
   output$drugeffPlot_DHApip <- renderPlot({
